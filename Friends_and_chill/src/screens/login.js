@@ -21,9 +21,13 @@ export default function LoginScreen({ navigation }) {
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
       {/* Logo centrado */}
       <View style={styles.logoContainer}>
-        <Text style={styles.overlayText}>Bienvenidooo!!</Text>
+        <View style={styles.overlayText}>
+          <Text style={styles.textStyle}>Friends</Text>
+          <Text style={styles.textStyle}>&</Text>
+          <Text style={styles.textStyle}>Chill</Text>
+        </View>
         <Image
-          source={require('../assets/CAMBIARRRR.jpg')}
+          source={require('../assets/logo.png')}
           style={styles.logo}
         />
       </View>
@@ -67,15 +71,23 @@ const styles = StyleSheet.create({
     top: '35%', // Ajusta si es necesario
     left: 10, // Pegado a la izquierda
     textAlign: 'left',
-    color: '#fff',
+    color: '#e5caac',
     fontSize: 32,
     fontWeight: 'bold',
     zIndex: 2,
   },  
+  textStyle:{
+    left: 10, // Pegado a la izquierda
+    textAlign: 'left',
+    color: '#e5caac',
+    fontSize: 32,
+    fontWeight: 'bold',
+    zIndex: 2,
+  },
   logo: {
     width: '100%',
     height: '100%',
-    resizeMode: 'cover',
+    resizeMode: 'cover'
   },  
   container: {
     flex: 0.75,
