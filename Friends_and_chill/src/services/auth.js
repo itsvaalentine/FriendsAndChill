@@ -1,21 +1,21 @@
 export async function login(email, password) {
   try {
-    // Aquí harías la petición a tu backend, por ejemplo:
-    // const response = await fetch('https://miapi.com/login', {
-    //   method: 'POST',
-    //   headers: { 'Content-Type': 'application/json' },
-    //   body: JSON.stringify({ email, password }),
-    // });
-    // const data = await response.json();
-    // return data;
+    console.log("Auth.js - Login attempt with:", email, password);
+    console.log("Auth.js - Expected credentials:", 'demo@example.com', '123456');
+    console.log("Auth.js - Comparison result:", 
+                email === 'demo@example.com', 
+                password === '123456', 
+                email === 'demo@example.com' && password === '123456');
     
-    // Mock de autenticación
     if (email === 'demo@example.com' && password === '123456') {
+      console.log("Auth.js - Login successful");
       return { ok: true, token: 'abc123' };
     } else {
+      console.log("Auth.js - Login failed");
       throw new Error('Usuario/contraseña incorrectos');
     }
   } catch (error) {
+    console.log("Auth.js - Error caught:", error.message);
     throw error;
   }
 }
