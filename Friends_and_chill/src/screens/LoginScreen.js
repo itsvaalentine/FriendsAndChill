@@ -11,8 +11,8 @@ export default function LoginScreen({ navigation }) {
   const handleLogin = async () => {
     try {
       const response = await login(email, password);
-  
-      if (response.success) {
+    
+      if (response.ok) { // Changed from response.success to response.ok
         navigation.replace('HomeScreen');
       } else {
         alert('Email o contraseña incorrectos');
