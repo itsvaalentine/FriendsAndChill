@@ -11,11 +11,18 @@ export default function LoginScreen({ navigation }) {
   const handleLogin = async () => {
     try {
       const response = await login(email, password);
-      navigation.navigate('HomeScreen');
+  
+      if (response.success) {
+        navigation.replace('HomeScreen');
+      } else {
+        alert('Email o contraseña incorrectos');
+      }
     } catch (error) {
-      console.error(error);
+      console.error('Login error:', error);
+      alert('Ocurrió un error al iniciar sesión.');
     }
   };
+  
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
