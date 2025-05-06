@@ -38,7 +38,6 @@ export default function HomeScreen() {
   );
 }
 
-// Los estilos se mantienen igual
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 10, backgroundColor: '#111' },
   title: { fontSize: 24, color: '#fff', marginBottom: 10 },

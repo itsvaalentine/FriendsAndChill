@@ -30,24 +30,36 @@ export async function searchMovies(query) {
 
 // Función para obtener detalles de una película
 export async function getMovieDetails(id) {
-  try {
-    const response = await axios.get(
-      `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}&language=es-ES`
-    );
-    
-    return {
-      imdbID: response.data.id.toString(),
-      Title: response.data.title,
-      Year: response.data.release_date ? response.data.release_date.substring(0, 4) : 'N/A',
-      Plot: response.data.overview,
-      Poster: response.data.poster_path ? `${IMAGE_BASE_URL}${response.data.poster_path}` : 'https://via.placeholder.com/300x450?text=No+Image',
-      Runtime: `${response.data.runtime} min`,
-      Genre: response.data.genres.map(g => g.name).join(', '),
-      Director: 'N/A', // TMDB no tiene director directamente, necesitarías otra llamada
-      imdbRating: response.data.vote_average.toString()
-    };
-  } catch (error) {
-    console.error('Error al obtener detalles de la película:', error);
-    return null;
+    try {
+      const response = await axios.get(
+        `https://api.themoviedb.org/3/movie/${id}?api_key=${API_KEY}&language=es-ES`
+      );
+  
+      // Fetch watch providers
+      const watchProvidersResponse = await axios.get(
+        `https://api.themoviedb.org/3/movie/${id}/watch/providers?api_key=${API_KEY}`
+      );
+  
+      const watchProviders = watchProvidersResponse.data.results?.ES || {}; // Replace 'ES' with your desired country code
+  
+      return {
+        imdbID: response.data.id.toString(),
+        Title: response.data.title,
+        Year: response.data.release_date ? response.data.release_date.substring(0, 4) : 'N/A',
+        Plot: response.data.overview,
+        Poster: response.data.poster_path ? `${IMAGE_BASE_URL}${response.data.poster_path}` : 'https://via.placeholder.com/300x450?text=No+Image',
+        Runtime: `${response.data.runtime} min`,
+        Genre: response.data.genres.map(g => g.name).join(', '),
+        Director: 'N/A', // TMDB no tiene director directamente, necesitarías otra llamada
+        imdbRating: response.data.vote_average.toString(),
+        WatchProviders: {
+          Streaming: watchProviders.flatrate?.map(provider => provider.provider_name) || [],
+          Rent: watchProviders.rent?.map(provider => provider.provider_name) || [],
+          Buy: watchProviders.buy?.map(provider => provider.provider_name) || []
+        }
+      };
+    } catch (error) {
+      console.error('Error al obtener detalles de la película:', error);
+      return null;
+    }
   }
-}
