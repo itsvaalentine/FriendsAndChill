@@ -10,15 +10,20 @@ export default function LoginScreen({ navigation }) {
 
   const handleLogin = async () => {
     try {
+      console.log("LoginScreen - Attempting login with:", email, password);
+      
       const response = await login(email, password);
-    
-      if (response.ok) { // Changed from response.success to response.ok
+      console.log("LoginScreen - Login response:", response);
+      
+      if (response.ok) {
+        console.log("LoginScreen - Login successful, navigating to HomeScreen");
         navigation.replace('HomeScreen');
       } else {
+        console.log("LoginScreen - Login failed (no error thrown but not ok)");
         alert('Email o contraseña incorrectos');
       }
     } catch (error) {
-      console.error('Login error:', error);
+      console.error('LoginScreen - Login error caught:', error.message);
       alert('Ocurrió un error al iniciar sesión.');
     }
   };
