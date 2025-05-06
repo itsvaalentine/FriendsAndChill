@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, FlatList, Image, StyleSheet, TextInput } from 'react-native';
-import { searchMovies } from '../services/omdb';
+import { searchMovies, IMAGE_BASE_URL } from '../services/tmdb'; // Cambiado de omdb a tmdb
 
 export default function HomeScreen() {
   const [movies, setMovies] = useState([]);
@@ -38,6 +38,7 @@ export default function HomeScreen() {
   );
 }
 
+// Los estilos se mantienen igual
 const styles = StyleSheet.create({
   container: { flex: 1, padding: 10, backgroundColor: '#111' },
   title: { fontSize: 24, color: '#fff', marginBottom: 10 },

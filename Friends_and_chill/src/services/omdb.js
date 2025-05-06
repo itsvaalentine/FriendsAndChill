@@ -16,13 +16,14 @@ export async function searchMovies(query) {
 
 export const getMovieDetails = async (id) => {
   try {
+    console.time()
     const response = await axios.get(BASE_URL, {
       params: {
         i: id,         // 'tt1234567', etc.
         apikey: API_KEY,
       },
     });
-
+    console.timeEnd()
     return response.data; // Devuelve detalles de la película
   } catch (error) {
     console.error('Error al obtener detalles de la película:', error);
