@@ -3,21 +3,17 @@ import axios from 'axios';
 const API_KEY = 'TU_API_KEY_AQUI'; // ← reemplaza con tu clave
 const BASE_URL = 'https://www.omdbapi.com/';
 
-export const searchMovies = async (query) => {
-  try {
-    const response = await axios.get(BASE_URL, {
-      params: {
-        s: query,       // 'Batman', 'Avengers', etc.
-        apikey: API_KEY,
-      },
-    });
+export async function searchMovies(query) {
+    try {
+      const response = await axios.get(`https://www.omdbapi.com/?s=${query}&apikey=${API_KEY}`);
+      return response.data.Search || [];
+    } catch (error) {
+      console.error('Error al buscar películas:', error);
+      return [];
+    }
 
-    return response.data.Search || []; // Devuelve array o vacío
-  } catch (error) {
-    console.error('Error al buscar películas:', error);
-    return [];
-  }
-};
+}
+
 export const getMovieDetails = async (id) => {
   try {
     const response = await axios.get(BASE_URL, {
