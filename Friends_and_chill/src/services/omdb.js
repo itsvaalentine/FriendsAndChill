@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_KEY = 'd17f61bf-e7c8-4a18-acfb-e056eefd1022'; // ← reemplaza con tu clave
+const API_KEY = 'f2f40810'; // ← reemplaza con tu clave
 const BASE_URL = 'https://www.omdbapi.com/';
 
 export async function searchMovies(query) {
