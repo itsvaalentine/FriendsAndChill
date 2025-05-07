@@ -20,7 +20,6 @@ export async function searchMovies(query) {
       Title: movie.title,
       Poster: movie.poster_path ? `${IMAGE_BASE_URL}${movie.poster_path}` : 'https://via.placeholder.com/300x450?text=No+Image',
       Year: movie.release_date ? movie.release_date.substring(0, 4) : 'N/A',
-      // Puedes añadir más campos si los necesitas
     }));
   } catch (error) {
     console.error('Error al buscar películas:', error);
@@ -61,5 +60,68 @@ export async function getMovieDetails(id) {
     } catch (error) {
       console.error('Error al obtener detalles de la película:', error);
       return null;
+    }
+  }
+
+// Categorías y tipos
+export const category = {
+    movie: 'movie',
+    tv: 'tv'
+  };
+  
+  export const movieType = {
+    popular: 'popular',
+    top_rated: 'top_rated',
+    upcoming: 'upcoming'
+  };
+  
+  export const tvType = {
+    popular: 'popular',
+    top_rated: 'top_rated',
+    on_the_air: 'on_the_air'
+  };
+  
+  // Obtener películas/series por categoría y tipo
+  export async function getByCategory(category, type, page = 1) {
+    try {
+      const response = await axios.get(
+        `https://api.themoviedb.org/3/${category}/${type}?api_key=${API_KEY}&language=es-ES&page=${page}`
+      );
+      
+      return response.data.results.map(item => ({
+        id: item.id.toString(),
+        title: item.title || item.name,
+        poster: item.poster_path ? `${IMAGE_BASE_URL}${item.poster_path}` : 'https://via.placeholder.com/500x750',
+        backdrop: item.backdrop_path ? `${IMAGE_BASE_URL}${item.backdrop_path}` : null,
+        overview: item.overview,
+        rating: item.vote_average,
+        releaseDate: item.release_date || item.first_air_date
+      }));
+    } catch (error) {
+      console.error(`Error al obtener ${category}/${type}:`, error);
+      return [];
+    }
+  }
+  
+  // Obtener películas/series en tendencia
+  export async function getTrending(mediaType = 'all', timeWindow = 'day') {
+    try {
+      const response = await axios.get(
+        `https://api.themoviedb.org/3/trending/${mediaType}/${timeWindow}?api_key=${API_KEY}&language=es-ES`
+      );
+      
+      return response.data.results.map(item => ({
+        id: item.id.toString(),
+        title: item.title || item.name,
+        poster: item.poster_path ? `${IMAGE_BASE_URL}${item.poster_path}` : 'https://via.placeholder.com/500x750',
+        backdrop: item.backdrop_path ? `${IMAGE_BASE_URL}${item.backdrop_path}` : null,
+        overview: item.overview,
+        rating: item.vote_average,
+        mediaType: item.media_type,
+        releaseDate: item.release_date || item.first_air_date
+      }));
+    } catch (error) {
+      console.error('Error al obtener trending:', error);
+      return [];
     }
   }
