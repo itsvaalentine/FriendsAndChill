@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import InputField from '../components/InputField';
@@ -7,27 +7,26 @@ import { login } from '../services/auth';
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [loginStatus, setLoginStatus] = useState('');
 
   const handleLogin = async () => {
     try {
       console.log("LoginScreen - Attempting login with:", email, password);
-      
-      const response = await login(email, password);
-      console.log("LoginScreen - Login response:", response);
-      
+
+      const { response, data } = await login(email, password); // 👈 uso del servicio
+
       if (response.ok) {
-        console.log("LoginScreen - Login successful, navigating to HomeScreen");
+        setLoginStatus('success');
         navigation.replace('HomeScreen');
       } else {
-        console.log("LoginScreen - Login failed (no error thrown but not ok)");
-        alert('Email o contraseña incorrectos');
+        setLoginStatus('fail');
       }
-    } catch (error) {
+    } 
+    catch (error) {
+      setLoginStatus('error');
       console.error('LoginScreen - Login error caught:', error.message);
-      alert('Ocurrió un error al iniciar sesión.');
     }
   };
-  
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
@@ -65,6 +64,23 @@ export default function LoginScreen({ navigation }) {
             title="Entrar"
             onPress={handleLogin}
           />
+          
+          {loginStatus === 'success' && (
+            <Text style={{ color: 'green', textAlign: 'center', marginTop: 10 }}>
+              Inicio de sesión exitoso 🎉
+            </Text>
+          )}
+          {loginStatus === 'fail' && (
+            <Text style={{ color: 'red', textAlign: 'center', marginTop: 10 }}>
+              Email o contraseña incorrectos.
+            </Text>
+          )}
+          {loginStatus === 'error' && (
+            <Text style={{ color: 'orange', textAlign: 'center', marginTop: 10 }}>
+              Error al conectar con el servidor.
+            </Text>
+          )}
+
         </View>
       </View>
     </View>
