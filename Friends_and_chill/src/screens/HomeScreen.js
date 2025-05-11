@@ -1,4 +1,3 @@
-// src/screens/HomeScreen.js
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
 import { getByCategory, getTrending, getMovieDetails, category, movieType, tvType } from '../services/tmdb';
@@ -8,7 +7,6 @@ const MovieItem = ({ item, onPress }) => {
   const [isHovered, setIsHovered] = useState(false);
   const [details, setDetails] = useState(null);
 
-  // Cargar detalles cuando se hace hover
   const handleHoverIn = async () => {
     setIsHovered(true);
     if (!details) {
