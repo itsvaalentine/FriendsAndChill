@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import InputField from '../components/InputField';
 import { login } from '../services/auth';
@@ -64,6 +64,12 @@ export default function LoginScreen({ navigation }) {
             title="Entrar"
             onPress={handleLogin}
           />
+
+          <TouchableOpacity onPress={() => navigation.navigate('RegisterScreen')}>
+            <Text style={{ textAlign: 'center', marginTop: 15, color: '#6b4c3b', textDecorationLine: 'underline' }}>
+              ¿No tienes cuenta? Regístrate
+            </Text>
+          </TouchableOpacity>
           
           {loginStatus === 'success' && (
             <Text style={{ color: 'green', textAlign: 'center', marginTop: 10 }}>
