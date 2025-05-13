@@ -164,11 +164,7 @@ const HeroSlide = ({ movie, onPress }) => {
             <Text style={styles.heroRating}>⭐ {movie.rating?.toFixed(1) || 'N/A'}</Text>
           </View>
           
-          {isHovered && (
-            <TouchableOpacity style={styles.watchButton}>
-              <Text style={styles.watchButtonText}>▶ Ver ahora</Text>
-            </TouchableOpacity>
-          )}
+          
         </View>
       </View>
     </TouchableOpacity>
