@@ -1,6 +1,69 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { getByCategory, getTrending, getMovieDetails, category, movieType, tvType } from '../services/tmdb';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, TextInput } from 'react-native';
+import { getByCategory, getTrending, getMovieDetails, searchMovies, category, movieType, tvType } from '../services/tmdb';
+
+// Componente de Header
+const Header = ({ navigation, onSearch }) => {
+  const [searchQuery, setSearchQuery] = useState('');
+  const [showSearch, setShowSearch] = useState(false);
+
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
+      onSearch(searchQuery);
+    }
+  };
+
+  return (
+    <View style={styles.header}>
+      <View style={styles.headerLeft}>
+        <Text style={styles.appName}>CineStream</Text>
+      </View>
+      
+      <View style={styles.headerRight}>
+        {showSearch ? (
+          <View style={styles.searchContainer}>
+            <TextInput
+              style={styles.searchInput}
+              placeholder="Buscar películas y series..."
+              placeholderTextColor="#aaa"
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              onSubmitEditing={handleSearch}
+              autoFocus
+            />
+            <TouchableOpacity 
+              style={styles.searchButton} 
+              onPress={handleSearch}
+            >
+              <Text style={styles.searchButtonText}>🔍</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.closeSearchButton} 
+              onPress={() => setShowSearch(false)}
+            >
+              <Text style={styles.closeSearchText}>✕</Text>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <>
+            <TouchableOpacity 
+              style={styles.iconButton} 
+              onPress={() => setShowSearch(true)}
+            >
+              <Text style={styles.iconText}>🔍</Text>
+            </TouchableOpacity>
+            <TouchableOpacity 
+              style={styles.loginButton} 
+              onPress={() => navigation.navigate('Login')}
+            >
+              <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
+            </TouchableOpacity>
+          </>
+        )}
+      </View>
+    </View>
+  );
+};
 
 // Componente de película con hover
 const MovieItem = ({ item, onPress }) => {
@@ -127,9 +190,16 @@ export default function HomeScreen({ navigation }) {
   const [topRatedMovies, setTopRatedMovies] = React.useState([]);
   const [popularTV, setPopularTV] = React.useState([]);
   const [topRatedTV, setTopRatedTV] = React.useState([]);
+  const [searchResults, setSearchResults] = React.useState(null);
+  const [isLoading, setIsLoading] = React.useState(true);
 
   React.useEffect(() => {
-    const fetchData = async () => {
+    fetchInitialData();
+  }, []);
+
+  const fetchInitialData = async () => {
+    setIsLoading(true);
+    try {
       // Fetch trending for hero
       const trending = await getTrending('movie', 'week');
       setTrendingMovies(trending.slice(0, 5));
@@ -146,12 +216,28 @@ export default function HomeScreen({ navigation }) {
       
       const topTV = await getByCategory(category.tv, tvType.top_rated);
       setTopRatedTV(topTV);
-    };
-    
-    fetchData();
-  }, []);
+      
+      setSearchResults(null);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
-  if (trendingMovies.length === 0) {
+  const handleSearch = async (query) => {
+    setIsLoading(true);
+    try {
+      const results = await searchMovies(query);
+      setSearchResults(results);
+    } catch (error) {
+      console.error('Error searching:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  if (isLoading) {
     return (
       <View style={styles.loading}>
         <Text style={styles.loadingText}>Cargando...</Text>
@@ -160,49 +246,112 @@ export default function HomeScreen({ navigation }) {
   }
 
   return (
-    <ScrollView style={styles.container}>
-      {/* Hero Slide */}
-      <HeroSlide 
-        movie={trendingMovies[0]} 
-        onPress={() => navigation.navigate('Detail', { id: trendingMovies[0].id, category: 'movie' })}
+    <View style={styles.container}>
+      {/* Header with search and login */}
+      <Header 
+        navigation={navigation} 
+        onSearch={handleSearch} 
       />
       
-      {/* Películas Populares */}
-      <MovieListRow 
-        title="Películas Populares"
-        data={popularMovies}
-        onViewMore={() => navigation.navigate('ViewAll', { category: category.movie, type: movieType.popular })}
-        navigation={navigation}
-        category={category.movie}
-      />
-      
-      {/* Películas Mejor Valoradas */}
-      <MovieListRow 
-        title="Películas Mejor Valoradas"
-        data={topRatedMovies}
-        onViewMore={() => navigation.navigate('ViewAll', { category: category.movie, type: movieType.top_rated })}
-        navigation={navigation}
-        category={category.movie}
-      />
-      
-      {/* Series Populares */}
-      <MovieListRow 
-        title="Series Populares"
-        data={popularTV}
-        onViewMore={() => navigation.navigate('ViewAll', { category: category.tv, type: tvType.popular })}
-        navigation={navigation}
-        category={category.tv}
-      />
-      
-      {/* Series Mejor Valoradas */}
-      <MovieListRow 
-        title="Series Mejor Valoradas"
-        data={topRatedTV}
-        onViewMore={() => navigation.navigate('ViewAll', { category: category.tv, type: tvType.top_rated })}
-        navigation={navigation}
-        category={category.tv}
-      />
-    </ScrollView>
+      <ScrollView>
+        {searchResults ? (
+          // Search results view
+          <View style={styles.searchResultsContainer}>
+            <View style={styles.searchHeader}>
+              <Text style={styles.searchResultsTitle}>Resultados de búsqueda</Text>
+              <TouchableOpacity onPress={fetchInitialData}>
+                <Text style={styles.clearSearchText}>Volver al inicio</Text>
+              </TouchableOpacity>
+            </View>
+            
+            <View style={styles.searchResults}>
+              {searchResults.length > 0 ? (
+                searchResults.map(item => (
+                  <TouchableOpacity
+                    key={item.id}
+                    style={styles.searchResultItem}
+                    onPress={() => navigation.navigate('Detail', { 
+                      id: item.id, 
+                      category: item.media_type || category.movie 
+                    })}
+                  >
+                    <Image
+                      source={{ uri: item.poster }}
+                      style={styles.searchItemPoster}
+                    />
+                    <View style={styles.searchItemInfo}>
+                      <Text style={styles.searchItemTitle}>{item.title}</Text>
+                      <Text style={styles.searchItemYear}>
+                        {item.release_date ? item.release_date.substring(0, 4) : 'N/A'}
+                      </Text>
+                      <Text style={styles.searchItemRating}>
+                        ⭐ {item.rating?.toFixed(1) || 'N/A'}
+                      </Text>
+                      {item.overview && (
+                        <Text style={styles.searchItemOverview} numberOfLines={2}>
+                          {item.overview}
+                        </Text>
+                      )}
+                    </View>
+                  </TouchableOpacity>
+                ))
+              ) : (
+                <Text style={styles.noResultsText}>
+                  No se encontraron resultados. Intenta con otra búsqueda.
+                </Text>
+              )}
+            </View>
+          </View>
+        ) : (
+          // Home content
+          <>
+            {/* Hero Slide */}
+            {trendingMovies.length > 0 && (
+              <HeroSlide 
+                movie={trendingMovies[0]} 
+                onPress={() => navigation.navigate('Detail', { id: trendingMovies[0].id, category: 'movie' })}
+              />
+            )}
+            
+            {/* Películas Populares */}
+            <MovieListRow 
+              title="Películas Populares"
+              data={popularMovies}
+              onViewMore={() => navigation.navigate('ViewAll', { category: category.movie, type: movieType.popular, title: 'Películas Populares' })}
+              navigation={navigation}
+              category={category.movie}
+            />
+            
+            {/* Películas Mejor Valoradas */}
+            <MovieListRow 
+              title="Películas Mejor Valoradas"
+              data={topRatedMovies}
+              onViewMore={() => navigation.navigate('ViewAll', { category: category.movie, type: movieType.top_rated, title: 'Películas Mejor Valoradas' })}
+              navigation={navigation}
+              category={category.movie}
+            />
+            
+            {/* Series Populares */}
+            <MovieListRow 
+              title="Series Populares"
+              data={popularTV}
+              onViewMore={() => navigation.navigate('ViewAll', { category: category.tv, type: tvType.popular, title: 'Series Populares' })}
+              navigation={navigation}
+              category={category.tv}
+            />
+            
+            {/* Series Mejor Valoradas */}
+            <MovieListRow 
+              title="Series Mejor Valoradas"
+              data={topRatedTV}
+              onViewMore={() => navigation.navigate('ViewAll', { category: category.tv, type: tvType.top_rated, title: 'Series Mejor Valoradas' })}
+              navigation={navigation}
+              category={category.tv}
+            />
+          </>
+        )}
+      </ScrollView>
+    </View>
   );
 }
 
@@ -220,6 +369,138 @@ const styles = StyleSheet.create({
   loadingText: {
     color: 'white',
     fontSize: 18,
+  },
+  // Header styles
+  header: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    paddingHorizontal: 15,
+    paddingVertical: 12,
+    backgroundColor: '#141414',
+    borderBottomWidth: 1,
+    borderBottomColor: '#2a2a2a',
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  appName: {
+    color: '#ff0000',
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconButton: {
+    marginRight: 15,
+  },
+  iconText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  loginButton: {
+    backgroundColor: '#ff0000',
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 20,
+  },
+  loginButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+    fontSize: 14,
+  },
+  // Search styles
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  searchInput: {
+    flex: 1,
+    height: 36,
+    backgroundColor: '#2a2a2a',
+    borderRadius: 18,
+    color: 'white',
+    paddingHorizontal: 15,
+    marginRight: 10,
+  },
+  searchButton: {
+    marginRight: 10,
+  },
+  searchButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  closeSearchText: {
+    color: '#aaa',
+    fontSize: 16,
+  },
+  // Search results styles
+  searchResultsContainer: {
+    padding: 15,
+  },
+  searchHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  searchResultsTitle: {
+    color: 'white',
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+  clearSearchText: {
+    color: '#ff0000',
+    fontSize: 14,
+  },
+  searchResults: {
+    marginTop: 10,
+  },
+  searchResultItem: {
+    flexDirection: 'row',
+    marginBottom: 15,
+    backgroundColor: '#1a1a1a',
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  searchItemPoster: {
+    width: 100,
+    height: 150,
+  },
+  searchItemInfo: {
+    flex: 1,
+    padding: 12,
+  },
+  searchItemTitle: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  searchItemYear: {
+    color: '#aaa',
+    fontSize: 14,
+    marginBottom: 6,
+  },
+  searchItemRating: {
+    color: '#ffcc00',
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  searchItemOverview: {
+    color: '#ddd',
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  noResultsText: {
+    color: '#ddd',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 30,
   },
   // Hero styles
   heroContainer: {
