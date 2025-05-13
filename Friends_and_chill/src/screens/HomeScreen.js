@@ -120,19 +120,10 @@ const MovieItem = ({ item, onPress }) => {
   );
 };
 
-// Componente de lista horizontal
-const MovieListRow = ({ title, data, onViewMore, navigation, category }) => (
+// Componente de lista horizontal sin botón "Ver más"
+const MovieListRow = ({ title, data, navigation, category }) => (
   <View style={styles.sectionContainer}>
-    <View style={styles.sectionHeader}>
-      <Text style={styles.sectionTitle}>{title}</Text>
-      <TouchableOpacity 
-        style={styles.viewMoreButton} 
-        onPress={onViewMore}
-      >
-        <Text style={styles.viewMoreText}>Ver más</Text>
-      </TouchableOpacity>
-    </View>
-    
+    <Text style={styles.sectionTitle}>{title}</Text>
     <ScrollView horizontal showsHorizontalScrollIndicator={false}>
       {data.map(item => (
         <MovieItem 
@@ -246,7 +237,7 @@ export default function HomeScreen({ navigation }) {
   }
 
   return (
-    <View style={styles.container}>
+    <View style={[styles.container, { marginTop: 0 }]}>
       {/* Header with search and login */}
       <Header 
         navigation={navigation} 
@@ -314,37 +305,33 @@ export default function HomeScreen({ navigation }) {
             )}
             
             {/* Películas Populares */}
-            <MovieListRow 
+            <MovieListRow
               title="Películas Populares"
               data={popularMovies}
-              onViewMore={() => navigation.navigate('ViewAll', { category: category.movie, type: movieType.popular, title: 'Películas Populares' })}
               navigation={navigation}
               category={category.movie}
             />
             
             {/* Películas Mejor Valoradas */}
-            <MovieListRow 
+            <MovieListRow
               title="Películas Mejor Valoradas"
               data={topRatedMovies}
-              onViewMore={() => navigation.navigate('ViewAll', { category: category.movie, type: movieType.top_rated, title: 'Películas Mejor Valoradas' })}
               navigation={navigation}
               category={category.movie}
             />
             
             {/* Series Populares */}
-            <MovieListRow 
+            <MovieListRow
               title="Series Populares"
               data={popularTV}
-              onViewMore={() => navigation.navigate('ViewAll', { category: category.tv, type: tvType.popular, title: 'Series Populares' })}
               navigation={navigation}
               category={category.tv}
             />
             
             {/* Series Mejor Valoradas */}
-            <MovieListRow 
+            <MovieListRow
               title="Series Mejor Valoradas"
               data={topRatedTV}
-              onViewMore={() => navigation.navigate('ViewAll', { category: category.tv, type: tvType.top_rated, title: 'Series Mejor Valoradas' })}
               navigation={navigation}
               category={category.tv}
             />
@@ -433,6 +420,9 @@ const styles = StyleSheet.create({
   searchButtonText: {
     color: 'white',
     fontSize: 16,
+  },
+  closeSearchButton: {
+    padding: 5,
   },
   closeSearchText: {
     color: '#aaa',
@@ -566,29 +556,11 @@ const styles = StyleSheet.create({
     marginBottom: 20,
     paddingHorizontal: 10,
   },
-  sectionHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    marginVertical: 15,
-  },
   sectionTitle: {
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
-  },
-  viewMoreButton: {
-    borderWidth: 2,
-    borderColor: '#ff0000',
-    borderRadius: 30,
-    paddingHorizontal: 15,
-    paddingVertical: 5,
-    transition: 'all 0.2s ease',
-  },
-  viewMoreText: {
-    color: '#ff0000',
-    fontWeight: 'bold',
-    fontSize: 12,
+    marginVertical: 15,
   },
   // Movie item styles
   item: {
