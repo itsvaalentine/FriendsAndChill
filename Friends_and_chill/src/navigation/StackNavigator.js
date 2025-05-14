@@ -8,9 +8,9 @@ const Stack = createNativeStackNavigator();
 
 export default function AppNavigator() {
   return (
-    <Stack.Navigator>
-      <Stack.Screen name="LoginScreen" component={LoginScreen} />
-      <Stack.Screen name="HomeScreen" component={HomeScreen} />
+    <Stack.Navigator style={{ backgroundColor: '#fff' }}>
+      <Stack.Screen name="" component={LoginScreen} />
+      <Stack.Screen name="" component={HomeScreen} />
     </Stack.Navigator>
   );
 }
