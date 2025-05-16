@@ -1,5 +1,8 @@
 // src/services/authService.js
-import { API_URL } from '@env';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import Constants from 'expo-constants';
+
+const API_URL = Constants.expoConfig.extra.API_URL;
 
 export const login = async (email, password) => {
   try {
@@ -12,6 +15,11 @@ export const login = async (email, password) => {
     });
 
     const data = await response.json();
+
+    if (response.ok && data.token) {
+      await AsyncStorage.setItem('token', data.token); // 👈 guarda token
+    }
+
     return { response, data };
   } catch (error) {
     throw new Error('Error de red al intentar iniciar sesión');
@@ -30,6 +38,11 @@ export const register = async ( username, email, password) => {
     });
 
     const data = await response.json();
+
+    if (response.ok && data.token) {
+      await AsyncStorage.setItem('token', data.token); // 👈 guarda token
+    }
+
     return { response, data };
   } catch (error) {
     throw new Error('Error de red al intentar iniciar sesión');

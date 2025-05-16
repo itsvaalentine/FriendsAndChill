@@ -1,7 +1,7 @@
 // src/screens/HomeScreen.js
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image } from 'react-native';
-import { getByCategory, getTrending, getMovieDetails, category, movieType, tvType } from '../services/tmdb';
+import { Image, ScrollView, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { category, getByCategory, getMovieDetails, getTrending, movieType, tvType } from '../services/tmdb';
 
 // Componente de película con hover
 const MovieItem = ({ item, onPress }) => {
@@ -161,6 +161,11 @@ export default function HomeScreen({ navigation }) {
     );
   }
 
+  const logout = async () => {
+    await AsyncStorage.removeItem('token');
+    navigation.replace('LoginScreen');
+  };
+  
   return (
     <ScrollView style={styles.container}>
       {/* Hero Slide */}
