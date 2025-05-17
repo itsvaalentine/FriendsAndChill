@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, TextInput } from 'react-native';
-import { getByCategory, getTrending, getMovieDetails, searchMovies, category, movieType, tvType } from '../services/tmdb';
+import { Image, ScrollView, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native';
+import { category, getByCategory, getMovieDetails, getTrending, movieType, searchMovies, tvType } from '../services/tmdb';
 
 // Componente de Header
 const Header = ({ navigation, onSearch }) => {

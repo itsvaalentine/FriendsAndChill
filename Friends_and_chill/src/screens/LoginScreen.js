@@ -1,7 +1,8 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { Image, StyleSheet, Text, View } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import InputField from '../components/InputField';
+import Roulette from '../components/Roulette';
 import { login } from '../services/auth';
 
 export default function LoginScreen({ navigation }) {
@@ -65,6 +66,7 @@ export default function LoginScreen({ navigation }) {
             title="Entrar"
             onPress={handleLogin}
           />
+          <Roulette />
         </View>
       </View>
     </View>
