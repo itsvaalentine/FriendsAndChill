@@ -184,45 +184,78 @@ export default function HomeScreen({ navigation }) {
     fetchInitialData();
   }, []);
 
-  const fetchInitialData = async () => {
-    setIsLoading(true);
-    try {
-      // Fetch trending for hero
-      const trending = await getTrending('movie', 'week');
-      setTrendingMovies(trending.slice(0, 5));
-      
-      // Fetch section data
-      const popular = await getByCategory(category.movie, movieType.popular);
-      setPopularMovies(popular);
-      
-      const topRated = await getByCategory(category.movie, movieType.top_rated);
-      setTopRatedMovies(topRated);
-      
-      const popTV = await getByCategory(category.tv, tvType.popular);
-      setPopularTV(popTV);
-      
-      const topTV = await getByCategory(category.tv, tvType.top_rated);
-      setTopRatedTV(topTV);
-      
-      setSearchResults(null);
-    } catch (error) {
-      console.error('Error fetching data:', error);
-    } finally {
-      setIsLoading(false);
-    }
-  };
+  const imageBaseUrl = 'https://image.tmdb.org/t/p/w500';
+
+const fetchInitialData = async () => {
+  setIsLoading(true);
+  try {
+    const trending = await getTrending('movie', 'week');
+    setTrendingMovies(
+      trending.slice(0, 5).map(movie => ({
+        ...movie,
+        poster: `${imageBaseUrl}${movie.poster_path}`,
+        backdrop: `${imageBaseUrl}${movie.backdrop_path}`,
+      }))
+    );
+
+    const popular = await getByCategory(category.movie, movieType.popular);
+    setPopularMovies(
+      popular.map(movie => ({
+        ...movie,
+        poster: `${imageBaseUrl}${movie.poster_path}`,
+      }))
+    );
+
+    const topRated = await getByCategory(category.movie, movieType.top_rated);
+    setTopRatedMovies(
+      topRated.map(movie => ({
+        ...movie,
+        poster: `${imageBaseUrl}${movie.poster_path}`,
+      }))
+    );
+
+    const popTV = await getByCategory(category.tv, tvType.popular);
+    setPopularTV(
+      popTV.map(tv => ({
+        ...tv,
+        poster: `${imageBaseUrl}${tv.poster_path}`,
+      }))
+    );
+
+    const topTV = await getByCategory(category.tv, tvType.top_rated);
+    setTopRatedTV(
+      topTV.map(tv => ({
+        ...tv,
+        poster: `${imageBaseUrl}${tv.poster_path}`,
+      }))
+    );
+
+    setSearchResults(null);
+  } catch (error) {
+    console.error('Error fetching data:', error);
+  } finally {
+    setIsLoading(false);
+  }
+};
+
 
   const handleSearch = async (query) => {
     setIsLoading(true);
     try {
       const results = await searchMovies(query);
-      setSearchResults(results);
+      setSearchResults(
+        results.map(item => ({
+          ...item,
+          poster: `${imageBaseUrl}${item.poster_path}`,
+        }))
+      );
     } catch (error) {
       console.error('Error searching:', error);
     } finally {
       setIsLoading(false);
     }
   };
+
 
   if (isLoading) {
     return (
