@@ -184,7 +184,7 @@ export default function HomeScreen({ navigation }) {
     fetchInitialData();
   }, []);
 
-  const imageBaseUrl = 'https://image.tmdb.org/t/p/w500';
+const imageBaseUrl = 'https://image.tmdb.org/t/p/w500';
 
 const fetchInitialData = async () => {
   setIsLoading(true);
@@ -453,5 +453,24 @@ const styles = StyleSheet.create({
   closeSearchText: {
     color: '#a97449',
   },
+  poster: {
+  width: '100%',
+  height: 180,
+  borderRadius: 8,
+  resizeMode: 'cover',
+  },
+  heroContainer: {
+    width: '100%',
+    height: 250,
+    position: 'relative',
+  },
+  item: {
+  marginRight: 12,
+  width: 140,
+  borderRadius: 12,
+  backgroundColor: '#fff',
+  overflow: 'hidden',
+  elevation: 3,
+  }
   // Ajustes adicionales similares para otros elementos...
 });
