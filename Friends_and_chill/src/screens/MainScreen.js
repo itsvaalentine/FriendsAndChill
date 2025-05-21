@@ -4,17 +4,8 @@ import {
   View, Text, StyleSheet, ScrollView,
   TouchableOpacity, Image, TextInput, Modal
 } from 'react-native';
-import {
-  getTrending,
-  getByCategory,
-  getMovieDetails,
-  getWatchProviders,
-  searchMovies,
-  searchTV,
-  movieType,
-  tvType,
-  category
-} from '../services/tmdb';
+import { getByCategory, getTrending, getMovieDetails, searchMovies, category, movieType, tvType, searchTV } from '../services/tmdb';
+
 import { Ionicons } from '@expo/vector-icons';
 
 export default function MainScreen() {

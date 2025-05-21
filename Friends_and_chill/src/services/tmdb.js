@@ -125,3 +125,19 @@ export const category = {
       return [];
     }
   }
+
+  export async function searchTV(query) {
+  try {
+    const response = await axios.get(
+      `https://api.themoviedb.org/3/search/tv?api_key=${API_KEY}&query=${encodeURIComponent(query)}&language=es-ES`
+    );
+
+    return {
+      ok: true,
+      data: response.data
+    };
+  } catch (error) {
+    console.error('Error al buscar series:', error);
+    return { ok: false, error };
+  }
+}
