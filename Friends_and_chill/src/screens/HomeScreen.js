@@ -184,78 +184,45 @@ export default function HomeScreen({ navigation }) {
     fetchInitialData();
   }, []);
 
-const imageBaseUrl = 'https://image.tmdb.org/t/p/w500';
-
-const fetchInitialData = async () => {
-  setIsLoading(true);
-  try {
-    const trending = await getTrending('movie', 'week');
-    setTrendingMovies(
-      trending.slice(0, 5).map(movie => ({
-        ...movie,
-        poster: `${imageBaseUrl}${movie.poster_path}`,
-        backdrop: `${imageBaseUrl}${movie.backdrop_path}`,
-      }))
-    );
-
-    const popular = await getByCategory(category.movie, movieType.popular);
-    setPopularMovies(
-      popular.map(movie => ({
-        ...movie,
-        poster: `${imageBaseUrl}${movie.poster_path}`,
-      }))
-    );
-
-    const topRated = await getByCategory(category.movie, movieType.top_rated);
-    setTopRatedMovies(
-      topRated.map(movie => ({
-        ...movie,
-        poster: `${imageBaseUrl}${movie.poster_path}`,
-      }))
-    );
-
-    const popTV = await getByCategory(category.tv, tvType.popular);
-    setPopularTV(
-      popTV.map(tv => ({
-        ...tv,
-        poster: `${imageBaseUrl}${tv.poster_path}`,
-      }))
-    );
-
-    const topTV = await getByCategory(category.tv, tvType.top_rated);
-    setTopRatedTV(
-      topTV.map(tv => ({
-        ...tv,
-        poster: `${imageBaseUrl}${tv.poster_path}`,
-      }))
-    );
-
-    setSearchResults(null);
-  } catch (error) {
-    console.error('Error fetching data:', error);
-  } finally {
-    setIsLoading(false);
-  }
-};
-
+  const fetchInitialData = async () => {
+    setIsLoading(true);
+    try {
+      // Fetch trending for hero
+      const trending = await getTrending('movie', 'week');
+      setTrendingMovies(trending.slice(0, 5));
+      
+      // Fetch section data
+      const popular = await getByCategory(category.movie, movieType.popular);
+      setPopularMovies(popular);
+      
+      const topRated = await getByCategory(category.movie, movieType.top_rated);
+      setTopRatedMovies(topRated);
+      
+      const popTV = await getByCategory(category.tv, tvType.popular);
+      setPopularTV(popTV);
+      
+      const topTV = await getByCategory(category.tv, tvType.top_rated);
+      setTopRatedTV(topTV);
+      
+      setSearchResults(null);
+    } catch (error) {
+      console.error('Error fetching data:', error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleSearch = async (query) => {
     setIsLoading(true);
     try {
       const results = await searchMovies(query);
-      setSearchResults(
-        results.map(item => ({
-          ...item,
-          poster: `${imageBaseUrl}${item.poster_path}`,
-        }))
-      );
+      setSearchResults(results);
     } catch (error) {
       console.error('Error searching:', error);
     } finally {
       setIsLoading(false);
     }
   };
-
 
   if (isLoading) {
     return (
@@ -374,103 +341,296 @@ const fetchInitialData = async () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f8f1df', // color beige claro
+    backgroundColor: '#0f0f0f',
   },
   loading: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#f8f1df',
+    backgroundColor: '#0f0f0f',
   },
   loadingText: {
-    color: '#5a4b42', // marrón suave
+    color: 'white',
     fontSize: 18,
   },
+  // Header styles
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 15,
-    paddingVertical: 20,
-    backgroundColor: '#5a4b42', // marrón cálido
+    paddingVertical: 12,
+    backgroundColor: '#141414',
     borderBottomWidth: 1,
-    borderBottomColor: '#c8ad7f',
-    borderTopLeftRadius: 30,
-    borderTopRightRadius: 30,
+    borderBottomColor: '#2a2a2a',
+  },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
   },
   appName: {
-    color: '#fce3c3', // color cálido crema
-    fontSize: 24,
+    color: '#ff0000',
+    fontSize: 22,
     fontWeight: 'bold',
   },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  iconButton: {
+    marginRight: 15,
+  },
+  iconText: {
+    color: 'white',
+    fontSize: 16,
+  },
   loginButton: {
-    backgroundColor: '#c8ad7f', // color más suave que el rojo
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 25,
+    backgroundColor: '#ff0000',
+    paddingVertical: 8,
+    paddingHorizontal: 15,
+    borderRadius: 20,
   },
   loginButtonText: {
-    color: '#5a4b42',
+    color: 'white',
     fontWeight: 'bold',
     fontSize: 14,
   },
+  // Search styles
+  searchContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    flex: 1,
+  },
+  searchInput: {
+    flex: 1,
+    height: 36,
+    backgroundColor: '#2a2a2a',
+    borderRadius: 18,
+    color: 'white',
+    paddingHorizontal: 15,
+    marginRight: 10,
+  },
+  searchButton: {
+    marginRight: 10,
+  },
+  searchButtonText: {
+    color: 'white',
+    fontSize: 16,
+  },
+  closeSearchButton: {
+    padding: 5,
+  },
+  closeSearchText: {
+    color: '#aaa',
+    fontSize: 16,
+  },
+  // Search results styles
+  searchResultsContainer: {
+    padding: 15,
+  },
+  searchHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  searchResultsTitle: {
+    color: 'white',
+    fontSize: 22,
+    fontWeight: 'bold',
+  },
+  clearSearchText: {
+    color: '#ff0000',
+    fontSize: 14,
+  },
+  searchResults: {
+    marginTop: 10,
+  },
+  searchResultItem: {
+    flexDirection: 'row',
+    marginBottom: 15,
+    backgroundColor: '#1a1a1a',
+    borderRadius: 8,
+    overflow: 'hidden',
+  },
+  searchItemPoster: {
+    width: 100,
+    height: 150,
+  },
+  searchItemInfo: {
+    flex: 1,
+    padding: 12,
+  },
+  searchItemTitle: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,
+  },
+  searchItemYear: {
+    color: '#aaa',
+    fontSize: 14,
+    marginBottom: 6,
+  },
+  searchItemRating: {
+    color: '#ffcc00',
+    fontSize: 14,
+    marginBottom: 8,
+  },
+  searchItemOverview: {
+    color: '#ddd',
+    fontSize: 13,
+    lineHeight: 18,
+  },
+  noResultsText: {
+    color: '#ddd',
+    fontSize: 16,
+    textAlign: 'center',
+    marginTop: 30,
+  },
+  // Hero styles
+  heroContainer: {
+    height: 300,
+    width: '100%',
+    marginBottom: 20,
+    position: 'relative',
+  },
+  heroBackdrop: {
+    width: '100%',
+    height: '100%',
+    resizeMode: 'cover',
+  },
+  heroOverlay: {
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    backgroundColor: 'rgba(0,0,0,0.6)',
+    justifyContent: 'flex-end',
+    transition: 'all 0.3s ease',
+  },
+  heroOverlayHovered: {
+    backgroundColor: 'rgba(0,0,0,0.75)',
+  },
+  heroContent: {
+    padding: 20,
+  },
+  heroTitle: {
+    color: 'white',
+    fontSize: 24,
+    fontWeight: 'bold',
+    marginBottom: 10,
+  },
+  heroOverview: {
+    color: '#ddd',
+    fontSize: 14,
+    marginBottom: 15,
+    transition: 'all 0.3s ease',
+  },
+  heroRatingContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 15,
+  },
+  heroRating: {
+    color: '#ffcc00',
+    fontSize: 16,
+    fontWeight: 'bold',
+  },
+  watchButton: {
+    backgroundColor: '#ff0000',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 30,
+    alignSelf: 'flex-start',
+  },
+  watchButtonText: {
+    color: 'white',
+    fontWeight: 'bold',
+  },
+  // Section styles
+  sectionContainer: {
+    marginBottom: 20,
+    paddingHorizontal: 10,
+  },
   sectionTitle: {
-    color: '#5a4b42',
-    fontSize: 20,
+    color: 'white',
+    fontSize: 18,
     fontWeight: 'bold',
     marginVertical: 15,
   },
+  // Movie item styles
   item: {
     marginRight: 10,
     width: 120,
-    borderRadius: 12,
-    backgroundColor: '#fefaf1',
-    padding: 6,
+    position: 'relative',
+    transition: 'all 0.3s ease',
+    zIndex: 1,
+  },
+  itemHovered: {
+    transform: [{ translateY: -5 }],
+    zIndex: 2,
+  },
+  poster: {
+    width: 120,
+    height: 180,
+    borderRadius: 8,
   },
   itemTitle: {
-    color: '#5a4b42',
-    fontSize: 13,
+    color: 'white',
+    fontSize: 12,
     marginTop: 5,
   },
   rating: {
-    color: '#a97449',
+    color: '#ffcc00',
     fontSize: 12,
     marginTop: 2,
   },
-  heroOverlay: {
-    backgroundColor: 'rgba(90, 75, 66, 0.6)', // más cálido que negro
+  // Hover card styles
+  hoverCard: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    width: 220,
+    backgroundColor: '#1f1f1f',
+    padding: 10,
+    borderRadius: 8,
+    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.5)',
+    zIndex: 10,
   },
-  heroOverlayHovered: {
-    backgroundColor: 'rgba(90, 75, 66, 0.8)',
+  hoverTitle: {
+    color: 'white',
+    fontSize: 14,
+    fontWeight: 'bold',
+    marginBottom: 4,
   },
-  searchInput: {
-    backgroundColor: '#e9dfd1',
-    color: '#5a4b42',
+  hoverYear: {
+    color: '#aaa',
+    fontSize: 12,
+    marginBottom: 8,
   },
-  searchButtonText: {
-    color: '#5a4b42',
+  hoverDescription: {
+    color: '#ddd',
+    fontSize: 12,
+    lineHeight: 16,
+    marginBottom: 8,
   },
-  closeSearchText: {
-    color: '#a97449',
+  hoverGenre: {
+    color: '#bbb',
+    fontSize: 11,
+    marginBottom: 4,
   },
-  poster: {
-  width: '100%',
-  height: 180,
-  borderRadius: 8,
-  resizeMode: 'cover',
+  hoverRuntime: {
+    color: '#bbb',
+    fontSize: 11,
+    marginBottom: 8,
   },
-  heroContainer: {
-    width: '100%',
-    height: 250,
-    position: 'relative',
+  hoverProvidersTitle: {
+    color: '#aaa',
+    fontSize: 11,
+    marginBottom: 2,
   },
-  item: {
-  marginRight: 12,
-  width: 140,
-  borderRadius: 12,
-  backgroundColor: '#fff',
-  overflow: 'hidden',
-  elevation: 3,
-  }
-  // Ajustes adicionales similares para otros elementos...
+  hoverProviders: {
+    color: '#3a9bdc',
+    fontSize: 11,
+  },
 });
