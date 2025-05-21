@@ -11,9 +11,10 @@ const Header = ({ navigation, onSearch, setShowLoginModal  }) => {
 
   const handleSearch = () => {
     if (searchQuery.trim()) {
-      setShowLoginModal(true);
+      onSearch(searchQuery); // <-- ¡ya no setShowLoginModal aquí!
     }
   };
+
 
 
 
@@ -223,15 +224,19 @@ export default function HomeScreen({ navigation }) {
   };
 
   const handleSearch = async (query) => {
-    setIsLoading(true);
-    try {
-      const results = await searchMovies(query);
-      setSearchResults(results);
-    } catch (error) {
-      console.error('Error searching:', error);
-    } finally {
-      setIsLoading(false);
-    }
+
+    if (!query || query.trim().length === 0) return;
+
+    setShowLoginModal(true);
+    // setIsLoading(true);
+    // try {
+    //   const results = await searchMovies(query);
+    //   setSearchResults(results);
+    // } catch (error) {
+    //   console.error('Error searching:', error);
+    // } finally {
+    //   setIsLoading(false);
+    // }
   };
 
   if (isLoading) {
@@ -250,6 +255,29 @@ export default function HomeScreen({ navigation }) {
         onSearch={handleSearch}
         setShowLoginModal={setShowLoginModal}
       />
+      {showLoginModal && (
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Inicia esta aventura iniciando sesión</Text>
+            <Text style={styles.modalText}>Para encontrar tu selección personalizada de películas</Text>
+            <TouchableOpacity
+              style={styles.modalButtonPrimary}
+              onPress={() => {
+                setShowLoginModal(false);
+                navigation.navigate('LoginScreen');
+              }}
+            >
+              <Text style={styles.modalButtonText}>Iniciar Sesión</Text>
+            </TouchableOpacity>
+            <TouchableOpacity
+              onPress={() => setShowLoginModal(false)}
+              style={styles.modalButtonSecondary}
+            >
+              <Text style={styles.modalButtonTextSecondary}>Cancelar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+        )}
       <ScrollView>
         {searchResults ? (
           // Search results view
