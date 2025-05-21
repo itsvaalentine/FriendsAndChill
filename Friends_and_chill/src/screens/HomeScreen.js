@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, Modal, StyleSheet } from 'react-native';
 import { getMovieDetails, getByCategory, getTrending, category, movieType, tvType } from '../services/tmdb';
-import { Modal } from 'react-native-web';
+// import { Modal } from 'react-native-web';
 
 const MovieItem = ({ item, onPress }) => {
   if (!item || !item.poster || !item.title) return null;
