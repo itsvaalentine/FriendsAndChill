@@ -19,3 +19,15 @@ export async function login(email, password) {
     throw error;
   }
 }
+
+export async function searchMovies(query) {
+  try {
+    const response = await fetch(
+      `https://api.themoviedb.org/3/search/movie?query=${encodeURIComponent(query)}&api_key=7e71cd90f1fc8b35b9010963bc221d74&language=es-MX`
+    );
+    const data = await response.json();  // <---- ¡Esto es esencial!
+    return { ok: response.ok, data };
+  } catch (error) {
+    return { ok: false, error };
+  }
+}
