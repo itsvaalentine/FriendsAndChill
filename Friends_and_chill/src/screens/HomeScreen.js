@@ -3,10 +3,10 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, TextInput 
 import { getByCategory, getTrending, getMovieDetails, searchMovies, category, movieType, tvType } from '../services/tmdb';
 
 // Componente de Header
-const Header = ({ navigation, onSearch }) => {
+const Header = ({ navigation, onSearch, setShowLoginModal  }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
-  const [showLoginModal, setShowLoginModal] = React.useState(false);
+  
 
 
   const handleSearch = async (query) => {
@@ -57,7 +57,7 @@ const Header = ({ navigation, onSearch }) => {
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.loginButton} 
-              onPress={() => navigation.navigate('LoginScreen')}
+              onPress={() => navigation.navigate('Login')}
             >
               <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
             </TouchableOpacity>
@@ -185,6 +185,8 @@ export default function HomeScreen({ navigation }) {
   const [topRatedTV, setTopRatedTV] = React.useState([]);
   const [searchResults, setSearchResults] = React.useState(null);
   const [isLoading, setIsLoading] = React.useState(true);
+  const [showLoginModal, setShowLoginModal] = React.useState(false);
+
 
   React.useEffect(() => {
     fetchInitialData();
@@ -243,37 +245,9 @@ export default function HomeScreen({ navigation }) {
       {/* Header with search and login */}
       <Header 
         navigation={navigation} 
-        onSearch={handleSearch} 
+        onSearch={handleSearch}
+        setShowLoginModal={setShowLoginModal}
       />
-      
-      {showLoginModal && (
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>¿Quieres ver tus películas favoritas?</Text>
-            <Text style={styles.modalText}>Para encontrar tu selección personalizada, inicia sesión.</Text>
-
-            <View style={styles.modalButtons}>
-              <TouchableOpacity
-                style={styles.modalButtonPrimary}
-                onPress={() => {
-                  setShowLoginModal(false);
-                  navigation.navigate('Login');
-                }}
-              >
-                <Text style={styles.modalButtonText}>Iniciar sesión</Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity
-                style={styles.modalButtonSecondary}
-                onPress={() => setShowLoginModal(false)}
-              >
-                <Text style={styles.modalButtonTextSecondary}>Cancelar</Text>
-              </TouchableOpacity>
-            </View>
-          </View>
-        </View>
-      )}
-
       <ScrollView>
         {searchResults ? (
           // Search results view
@@ -672,74 +646,4 @@ const styles = StyleSheet.create({
     color: '#3a9bdc',
     fontSize: 11,
   },
-  modalOverlay: {
-  position: 'absolute',
-  top: 0,
-  left: 0,
-  right: 0,
-  bottom: 0,
-  backgroundColor: 'rgba(0, 0, 0, 0.7)',
-  justifyContent: 'center',
-  alignItems: 'center',
-  zIndex: 999,
-  },
-
-  modalContent: {
-    width: '85%',
-    backgroundColor: '#1f1f1f',
-    borderRadius: 10,
-    padding: 20,
-    alignItems: 'center',
-    elevation: 10,
-  },
-
-  modalTitle: {
-    fontSize: 18,
-    fontWeight: 'bold',
-    color: 'white',
-    marginBottom: 10,
-    textAlign: 'center',
-  },
-
-  modalText: {
-    fontSize: 14,
-    color: '#ccc',
-    textAlign: 'center',
-    marginBottom: 20,
-  },
-
-  modalButtons: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    width: '100%',
-  },
-
-  modalButtonPrimary: {
-    backgroundColor: '#ff0000',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    flex: 1,
-    marginRight: 10,
-  },
-
-  modalButtonSecondary: {
-    backgroundColor: '#2a2a2a',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 5,
-    flex: 1,
-  },
-
-  modalButtonText: {
-    color: 'white',
-    textAlign: 'center',
-    fontWeight: 'bold',
-  },
-
-  modalButtonTextSecondary: {
-    color: '#aaa',
-    textAlign: 'center',
-  }
-
 });
