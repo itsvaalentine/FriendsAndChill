@@ -17,7 +17,7 @@ export default function LoginScreen({ navigation }) {
       
       if (response.ok) {
         console.log("LoginScreen - Login successful, navigating to HomeScreen");
-        navigation.replace('HomeScreen');
+        navigation.replace('MainScreen');
       } else {
         console.log("LoginScreen - Login failed (no error thrown but not ok)");
         alert('Email o contraseña incorrectos');
