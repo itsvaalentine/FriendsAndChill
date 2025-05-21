@@ -8,68 +8,58 @@ import {
   movieType, tvType, category
 } from '../services/tmdb';
 
+import { Ionicons } from '@expo/vector-icons';
+
 export default function MainScreen() {
-  const [movies, setMovies] = useState([]);
-  const [series, setSeries] = useState([]);
-  const [recommended, setRecommended] = useState([]);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [movieResults, setMovieResults] = useState([]);
+  const [tvResults, setTVResults] = useState([]);
   const [watchlistMovies, setWatchlistMovies] = useState([]);
   const [watchlistSeries, setWatchlistSeries] = useState([]);
-  const [selectedMovie, setSelectedMovie] = useState(null);
+  const [selected, setSelected] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
-  const [searchQuery, setSearchQuery] = useState('');
-
-  useEffect(() => {
-    loadContent();
-  }, []);
-
-  const loadContent = async () => {
-    const [trendingMovies, trendingSeries, topRated] = await Promise.all([
-      getTrending(movieType.movie),
-      getTrending(tvType.tv),
-      getByCategory(movieType.movie, category.top_rated)
-    ]);
-
-    if (trendingMovies.ok) setMovies(trendingMovies.data.results);
-    if (trendingSeries.ok) setSeries(trendingSeries.data.results);
-    if (topRated.ok) setRecommended(topRated.data.results);
-  };
 
   const handleSearch = async () => {
-    const result = await searchMovies(searchQuery);
-    if (result.ok) setMovies(result.data.results);
+    const movies = await searchMovies(searchQuery);
+    const series = await searchTV(searchQuery);
+    if (movies.ok) setMovieResults(movies.data.results);
+    if (series.ok) setTVResults(series.data.results);
   };
 
-  const openModal = async (id) => {
-    const result = await getMovieDetails(id);
-    if (result.ok) {
-      setSelectedMovie(result.data);
+  const handleAdd = (item, type) => {
+    if (type === 'movie') setWatchlistMovies(prev => [...prev, item]);
+    else setWatchlistSeries(prev => [...prev, item]);
+  };
+
+  const openModal = async (item, type) => {
+    const details = await getMovieDetails(item.id, type);
+    const providers = await getWatchProviders(item.id, type);
+    if (details.ok && providers.ok) {
+      setSelected({ ...details.data, platforms: providers.data.results.MX?.flatrate || [] });
       setModalVisible(true);
     }
   };
 
-  const addToWatchlist = (item, type) => {
-    if (type === 'movie') {
-      setWatchlistMovies(prev => [...prev, item]);
-    } else {
-      setWatchlistSeries(prev => [...prev, item]);
-    }
-  };
-
-  const renderHorizontalList = (title, data, type, allowAdd = false) => (
+  const renderHorizontal = (title, data, type) => (
     <View style={styles.section}>
       <Text style={styles.sectionTitle}>{title}</Text>
       <ScrollView horizontal showsHorizontalScrollIndicator={false}>
-        {data.map((item) => (
-          <TouchableOpacity
-            key={item.id}
-            onPress={() => openModal(item.id)}
-            onLongPress={() => allowAdd && addToWatchlist(item, type)}
-          >
-            <Image
-              source={{ uri: `https://image.tmdb.org/t/p/w300${item.poster_path}` }}
-              style={styles.poster}
-            />
-          </TouchableOpacity>
+        {data.map(item => (
+          <View key={item.id} style={styles.itemContainer}>
+            <TouchableOpacity onPress={() => openModal(item, type)}>
+              <Image
+                source={{ uri: `https://image.tmdb.org/t/p/w300${item.poster_path}` }}
+                style={styles.poster}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.addIcon}
+              onPress={() => handleAdd(item, type)}
+            >
+              <Ionicons name="add-circle" size={24} color="#fff" />
+            </TouchableOpacity>
+            <Text numberOfLines={1} style={styles.itemTitle}>{item.title || item.name}</Text>
+          </View>
         ))}
       </ScrollView>
     </View>
@@ -77,32 +67,40 @@ export default function MainScreen() {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>Tu Plataforma, Fodonguilla 💅</Text>
+      <Text style={styles.header}>🎬 Friend'&Chill</Text>
       <TextInput
         style={styles.searchInput}
-        placeholder="Buscar películas o series..."
-        placeholderTextColor="#888"
+        placeholder="Busca películas o series..."
+        placeholderTextColor="#999"
         value={searchQuery}
         onChangeText={setSearchQuery}
         onSubmitEditing={handleSearch}
       />
-
       <ScrollView>
-        {renderHorizontalList('🎬 Crear tu sección de películas por ver', watchlistMovies, 'movie')}
-        {renderHorizontalList('📺 Crear tu sección de series por ver', watchlistSeries, 'tv')}
-        {renderHorizontalList('✨ Nuestra recomendación para ti', recommended, 'movie', true)}
+        {renderHorizontal('➕ Agrega tu lista de películas por ver', movieResults, 'movie')}
+        {renderHorizontal('➕ Agrega tu lista de series por ver', tvResults, 'tv')}
+        {renderHorizontal('🎯 Tu lista de películas', watchlistMovies, 'movie')}
+        {renderHorizontal('🎯 Tu lista de series', watchlistSeries, 'tv')}
       </ScrollView>
 
-      {selectedMovie && (
+      {selected && (
         <Modal visible={modalVisible} animationType="slide" onRequestClose={() => setModalVisible(false)}>
           <View style={styles.modalContainer}>
-            <Text style={styles.modalTitle}>{selectedMovie.title || selectedMovie.name}</Text>
+            <Text style={styles.modalTitle}>{selected.title || selected.name}</Text>
             <Image
-              source={{ uri: `https://image.tmdb.org/t/p/w500${selectedMovie.backdrop_path}` }}
+              source={{ uri: `https://image.tmdb.org/t/p/w500${selected.backdrop_path}` }}
               style={styles.modalImage}
             />
-            <ScrollView style={styles.modalScroll}>
-              <Text style={styles.modalOverview}>{selectedMovie.overview}</Text>
+            <ScrollView style={{ padding: 10 }}>
+              <Text style={styles.modalOverview}>{selected.overview}</Text>
+              <Text style={styles.platformTitle}>Disponible en:</Text>
+              {selected.platforms.length > 0 ? (
+                selected.platforms.map((p, idx) => (
+                  <Text key={idx} style={styles.platformName}>• {p.provider_name}</Text>
+                ))
+              ) : (
+                <Text style={styles.platformName}>No disponible en streaming</Text>
+              )}
             </ScrollView>
             <TouchableOpacity onPress={() => setModalVisible(false)}>
               <Text style={styles.closeButton}>Cerrar</Text>
@@ -117,67 +115,93 @@ export default function MainScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: '#1c1c1e',
     padding: 10,
   },
   header: {
     color: '#fff',
     fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 10,
+    marginBottom: 15,
   },
   searchInput: {
-    backgroundColor: '#1f1f1f',
+    backgroundColor: '#2c2c2e',
     color: '#fff',
-    borderRadius: 8,
+    borderRadius: 10,
     paddingHorizontal: 15,
     height: 40,
     marginBottom: 20,
   },
   section: {
-    marginBottom: 25,
+    marginBottom: 30,
   },
   sectionTitle: {
     color: '#fff',
-    fontSize: 20,
+    fontSize: 18,
     fontWeight: '600',
     marginBottom: 10,
+  },
+  itemContainer: {
+    marginRight: 10,
+    width: 120,
+    alignItems: 'center',
   },
   poster: {
     width: 120,
     height: 180,
-    borderRadius: 8,
-    marginRight: 10,
+    borderRadius: 10,
+  },
+  itemTitle: {
+    color: '#fff',
+    fontSize: 12,
+    marginTop: 5,
+  },
+  addIcon: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    backgroundColor: '#000a',
+    borderRadius: 12,
+    padding: 2,
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: '#121212',
+    backgroundColor: '#1c1c1e',
     padding: 20,
-    alignItems: 'center',
   },
   modalTitle: {
-    fontSize: 24,
     color: '#fff',
+    fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
   },
   modalImage: {
     width: '100%',
-    height: 250,
+    height: 200,
     borderRadius: 10,
-    marginBottom: 15,
-  },
-  modalScroll: {
     marginBottom: 10,
   },
   modalOverview: {
-    color: '#ddd',
-    fontSize: 16,
+    color: '#ccc',
+    fontSize: 14,
     textAlign: 'justify',
+    marginBottom: 10,
   },
   closeButton: {
-    color: '#ff4444',
+    color: '#ff5252',
     fontSize: 18,
+    textAlign: 'center',
     marginTop: 20,
   },
+  platformTitle: {
+    color: '#fff',
+    fontSize: 16,
+    marginTop: 10,
+    fontWeight: '600',
+  },
+  platformName: {
+    color: '#ccc',
+    fontSize: 14,
+  },
 });
+
