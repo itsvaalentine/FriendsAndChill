@@ -25,7 +25,7 @@ const Header = ({ navigation, onSearch, setShowLoginModal  }) => {
   return (
     <View style={styles.header}>
       <View style={styles.headerLeft}>
-        <Text style={styles.appName}>CineStream</Text>
+        <Text style={styles.appName}>Friend'&Chill</Text>
       </View>
       
       <View style={styles.headerRight}>
@@ -389,351 +389,94 @@ export default function HomeScreen({ navigation }) {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#0f0f0f',
-  },
-  loading: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#0f0f0f',
-  },
-  loadingText: {
-    color: 'white',
-    fontSize: 18,
-  },
-  // Header styles
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 15,
-    paddingVertical: 12,
-    backgroundColor: '#141414',
-    borderBottomWidth: 1,
-    borderBottomColor: '#2a2a2a',
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  appName: {
-    color: '#ff0000',
-    fontSize: 22,
-    fontWeight: 'bold',
-  },
-  headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-  },
-  iconButton: {
-    marginRight: 15,
-  },
-  iconText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  loginButton: {
-    backgroundColor: '#ff0000',
-    paddingVertical: 8,
-    paddingHorizontal: 15,
-    borderRadius: 20,
-  },
-  loginButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-    fontSize: 14,
-  },
-  // Search styles
-  searchContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    flex: 1,
-  },
-  searchInput: {
-    flex: 1,
-    height: 36,
-    backgroundColor: '#2a2a2a',
-    borderRadius: 18,
-    color: 'white',
-    paddingHorizontal: 15,
-    marginRight: 10,
-  },
-  searchButton: {
-    marginRight: 10,
-  },
-  searchButtonText: {
-    color: 'white',
-    fontSize: 16,
-  },
-  closeSearchButton: {
-    padding: 5,
-  },
-  closeSearchText: {
-    color: '#aaa',
-    fontSize: 16,
-  },
-  // Search results styles
-  searchResultsContainer: {
-    padding: 15,
-  },
-  searchHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  searchResultsTitle: {
-    color: 'white',
-    fontSize: 22,
-    fontWeight: 'bold',
-  },
-  clearSearchText: {
-    color: '#ff0000',
-    fontSize: 14,
-  },
-  searchResults: {
-    marginTop: 10,
-  },
-  searchResultItem: {
-    flexDirection: 'row',
-    marginBottom: 15,
-    backgroundColor: '#1a1a1a',
-    borderRadius: 8,
-    overflow: 'hidden',
-  },
-  searchItemPoster: {
-    width: 100,
-    height: 150,
-  },
-  searchItemInfo: {
-    flex: 1,
-    padding: 12,
-  },
-  searchItemTitle: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  searchItemYear: {
-    color: '#aaa',
-    fontSize: 14,
-    marginBottom: 6,
-  },
-  searchItemRating: {
-    color: '#ffcc00',
-    fontSize: 14,
-    marginBottom: 8,
-  },
-  searchItemOverview: {
-    color: '#ddd',
-    fontSize: 13,
-    lineHeight: 18,
-  },
-  noResultsText: {
-    color: '#ddd',
-    fontSize: 16,
-    textAlign: 'center',
-    marginTop: 30,
-  },
-  // Hero styles
-  heroContainer: {
-    height: 300,
-    width: '100%',
-    marginBottom: 20,
-    position: 'relative',
-  },
-  heroBackdrop: {
-    width: '100%',
-    height: '100%',
-    resizeMode: 'cover',
-  },
-  heroOverlay: {
-    position: 'absolute',
-    width: '100%',
-    height: '100%',
-    backgroundColor: 'rgba(0,0,0,0.6)',
-    justifyContent: 'flex-end',
-    transition: 'all 0.3s ease',
-  },
-  heroOverlayHovered: {
-    backgroundColor: 'rgba(0,0,0,0.75)',
-  },
-  heroContent: {
-    padding: 20,
-  },
-  heroTitle: {
-    color: 'white',
-    fontSize: 24,
-    fontWeight: 'bold',
-    marginBottom: 10,
-  },
-  heroOverview: {
-    color: '#ddd',
-    fontSize: 14,
-    marginBottom: 15,
-    transition: 'all 0.3s ease',
-  },
-  heroRatingContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 15,
-  },
-  heroRating: {
-    color: '#ffcc00',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
-  watchButton: {
-    backgroundColor: '#ff0000',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    borderRadius: 30,
-    alignSelf: 'flex-start',
-  },
-  watchButtonText: {
-    color: 'white',
-    fontWeight: 'bold',
-  },
-  // Section styles
-  sectionContainer: {
-    marginBottom: 20,
-    paddingHorizontal: 10,
-  },
-  sectionTitle: {
-    color: 'white',
-    fontSize: 18,
-    fontWeight: 'bold',
-    marginVertical: 15,
-  },
-  // Movie item styles
-  item: {
-    marginRight: 10,
-    width: 120,
-    position: 'relative',
-    transition: 'all 0.3s ease',
-    zIndex: 1,
-  },
-  itemHovered: {
-    transform: [{ translateY: -5 }],
-    zIndex: 2,
-  },
-  poster: {
-    width: 120,
-    height: 180,
-    borderRadius: 8,
-  },
-  itemTitle: {
-  color: 'white',
-  fontSize: 12,
-  marginTop: 5,
-  textAlign: 'center',
-  paddingHorizontal: 4,
-  },
-  rating: {
-    color: '#ffcc00',
-    fontSize: 12,
-    marginTop: 2,
-  },
-  // Hover card styles
-  hoverCard: {
-  backgroundColor: '#1f1f1f',
-  padding: 10,
-  borderRadius: 8,
-  elevation: 5, // Android
-  shadowColor: '#000', // iOS
-  shadowOffset: { width: 0, height: 4 },
-  shadowOpacity: 0.3,
-  shadowRadius: 5,
-},
-  hoverCardTitle: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-    marginBottom: 4,  
-  },
-  hoverTitle: {
-    color: 'white',
-    fontSize: 14,
-    fontWeight: 'bold',
-    marginBottom: 4,
-  },
-  hoverYear: {
-    color: '#aaa',
-    fontSize: 12,
-    marginBottom: 8,
-  },
-  hoverDescription: {
-    color: '#ddd',
-    fontSize: 12,
-    lineHeight: 16,
-    marginBottom: 8,
-  },
-  hoverGenre: {
-    color: '#bbb',
-    fontSize: 11,
-    marginBottom: 4,
-  },
-  hoverRuntime: {
-    color: '#bbb',
-    fontSize: 11,
-    marginBottom: 8,
-  },
-  hoverProvidersTitle: {
-    color: '#aaa',
-    fontSize: 11,
-    marginBottom: 2,
-  },
-  hoverProviders: {
-    color: '#3a9bdc',
-    fontSize: 11,
-  },
-modalOverlay: {
+
+container: {
   flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-  backgroundColor: 'rgba(0,0,0,0.7)',
+  backgroundColor: '#1E1A17',
+},
+loadingText: {
+  color: '#F5EBDD',
+  fontSize: 18,
+},
+appName: {
+  color: '#8B4C39',
+  fontSize: 22,
+  fontWeight: 'bold',
+},
+header: {
+  backgroundColor: '#3B3632',
+  borderBottomColor: '#605B57',
+},
+loginButton: {
+  backgroundColor: '#8B4C39',
+  paddingVertical: 8,
+  paddingHorizontal: 15,
+  borderRadius: 20,
+},
+loginButtonText: {
+  color: '#F5EBDD',
+  fontWeight: 'bold',
+},
+searchInput: {
+  backgroundColor: '#605B57',
+  color: '#F5EBDD',
+},
+searchButtonText: {
+  color: '#F5EBDD',
+},
+closeSearchText: {
+  color: '#C7B9A5',
+},
+searchItemTitle: {
+  color: '#F5EBDD',
+},
+searchItemYear: {
+  color: '#C7B9A5',
+},
+searchItemRating: {
+  color: '#E8C26A',
+},
+searchItemOverview: {
+  color: '#C7B9A5',
+},
+sectionTitle: {
+  color: '#F5EBDD',
+},
+itemTitle: {
+  color: '#F5EBDD',
+},
+rating: {
+  color: '#E8C26A',
+},
+heroTitle: {
+  color: '#F5EBDD',
+},
+heroOverview: {
+  color: '#C7B9A5',
+},
+heroOverlay: {
+  backgroundColor: 'rgba(30, 26, 23, 0.8)',
 },
 modalContent: {
-  width: '80%',
-  backgroundColor: '#1c1c1c',
-  borderRadius: 10,
-  padding: 20,
-  alignItems: 'center',
+  backgroundColor: '#3B3632',
 },
 modalTitle: {
-  color: '#fff',
-  fontSize: 18,
-  fontWeight: 'bold',
-  marginBottom: 10,
-  textAlign: 'center',
+  color: '#F5EBDD',
 },
 modalText: {
-  color: '#ddd',
-  fontSize: 14,
-  textAlign: 'center',
-  marginBottom: 20,
+  color: '#C7B9A5',
 },
 modalButtonPrimary: {
-  backgroundColor: '#ff0000',
-  paddingVertical: 10,
-  paddingHorizontal: 25,
-  borderRadius: 8,
-  marginBottom: 10,
-},
-modalButtonSecondary: {
-  paddingVertical: 10,
-  paddingHorizontal: 25,
+  backgroundColor: '#8B4C39',
 },
 modalButtonText: {
-  color: '#fff',
-  fontWeight: 'bold',
+  color: '#F5EBDD',
 },
 modalButtonTextSecondary: {
-  color: '#ccc',
-  fontWeight: 'bold',
+  color: '#C7B9A5',
+},
+modalButtonSecondary: {
+  backgroundColor: '#3B3632',
 },
 
 });
