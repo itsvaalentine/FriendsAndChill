@@ -19,3 +19,26 @@ export async function login(email, password) {
     throw error;
   }
 }
+
+// services/auth.js
+
+export async function register(username, email, password) {
+  try {
+    const response = await fetch('http://127.0.0.1:3000/api/users/register', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({
+        username,
+        email,
+        password,
+      }),
+    });
+
+    return response;
+  } catch (error) {
+    console.error('Error en register:', error.message);
+    throw error;
+  }
+}

@@ -1,4 +1,3 @@
-import React from 'react';
 import { StyleSheet, Text, TouchableOpacity } from 'react-native';
 
 export default function CustomButton({ title, onPress }) {
@@ -11,15 +10,21 @@ export default function CustomButton({ title, onPress }) {
 
 const styles = StyleSheet.create({
   button: {
-    backgroundColor: '#007AFF',
-    paddingVertical: 10,
-    paddingHorizontal: 16,
-    borderRadius: 4,
+    backgroundColor: '#6b4c3b', // Color tierra
+    paddingVertical: 14,
+    paddingHorizontal: 24,
+    borderRadius: 20, // Más redondeado
     alignItems: 'center',
-    marginTop: 10,
+    marginTop: 20,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.2,
+    shadowRadius: 4,
+    elevation: 5,
   },
   text: {
-    color: '#fff',
-    fontSize: 16,
+    color: '#f5f0e1', // Color crema
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });

@@ -1,37 +1,47 @@
-import React, { useState } from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { useState } from 'react';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import CustomButton from '../components/CustomButton';
 import InputField from '../components/InputField';
+import PasswordInput from '../components/PasswordInput';
 import { login } from '../services/auth';
 
 export default function LoginScreen({ navigation }) {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
+  const [emailError, setEmailError] = useState('');
+  const [loginError, setLoginError] = useState('');
+
+  const validateEmail = (email) => {
+    // Simple expresión regular para validar correo
+    const regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return regex.test(email);
+  };
 
   const handleLogin = async () => {
+    setEmailError('');
+    setLoginError('');
+
+    if (!validateEmail(email)) {
+      setEmailError('Ingresa un correo válido.');
+      return;
+    }
+
     try {
-      console.log("LoginScreen - Attempting login with:", email, password);
-      
       const response = await login(email, password);
-      console.log("LoginScreen - Login response:", response);
-      
       if (response.ok) {
-        console.log("LoginScreen - Login successful, navigating to HomeScreen");
         navigation.replace('HomeScreen');
       } else {
-        console.log("LoginScreen - Login failed (no error thrown but not ok)");
-        alert('Email o contraseña incorrectos');
+        setLoginError('Email o contraseña incorrectos.');
       }
     } catch (error) {
       console.error('LoginScreen - Login error caught:', error.message);
-      alert('Ocurrió un error al iniciar sesión.');
+      setLoginError('Error al iniciar sesión. Intenta más tarde.');
     }
   };
-  
 
   return (
     <View style={{ flex: 1, backgroundColor: '#fff' }}>
-      {/* Logo centrado */}
+      {/* Logo */}
       <View style={styles.logoContainer}>
         <View style={styles.overlayText}>
           <Text style={styles.textStyle}>Friends</Text>
@@ -44,7 +54,7 @@ export default function LoginScreen({ navigation }) {
         />
       </View>
 
-      {/* Caja de Login con esquinas redondeadas */}
+      {/* Contenedor Login */}
       <View style={styles.container}>
         <View style={styles.innerContainer}>
           <Text style={styles.title}>Iniciar Sesión</Text>
@@ -54,17 +64,19 @@ export default function LoginScreen({ navigation }) {
             onChangeText={setEmail}
             placeholder="Email"
           />
-          <InputField
-            value={password}
-            onChangeText={setPassword}
-            placeholder="Contraseña"
-            secureTextEntry
-          />
+          {emailError ? <Text style={styles.errorText}>{emailError}</Text> : null}
+
+          <PasswordInput value={password} onChangeText={setPassword} placeholder="Contraseña" />
+          
+          {loginError ? <Text style={styles.errorText}>{loginError}</Text> : null}
 
           <CustomButton
             title="Entrar"
             onPress={handleLogin}
           />
+          <TouchableOpacity onPress={() => navigation.replace('RegisterScreen')}>
+            <Text style={styles.registerText}>¿No tienes una cuenta? Regístrate</Text>
+          </TouchableOpacity>
         </View>
       </View>
     </View>
@@ -78,18 +90,23 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#fff',
   },
+  registerText: {
+    marginTop: 20,
+    color: '#6b4c3b',
+    textAlign: 'center',
+    textDecorationLine: 'underline',
+    fontSize: 16,
+  },
+
   overlayText: {
     position: 'absolute',
-    top: '35%', // Ajusta si es necesario
-    left: 10, // Pegado a la izquierda
+    top: '25%',
+    left: 10,
     textAlign: 'left',
-    color: '#e5caac',
-    fontSize: 32,
-    fontWeight: 'bold',
     zIndex: 2,
-  },  
-  textStyle:{
-    left: 10, // Pegado a la izquierda
+  },
+  textStyle: {
+    left: 10,
     textAlign: 'left',
     color: '#e5caac',
     fontSize: 32,
@@ -100,7 +117,7 @@ const styles = StyleSheet.create({
     width: '100%',
     height: '100%',
     resizeMode: 'cover'
-  },  
+  },
   container: {
     flex: 0.75,
     backgroundColor: '#f5f0e1',
@@ -112,9 +129,8 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 4,
     elevation: 8,
-    marginTop: -40, // 👈 Esto hace que suba encima del logo
+    marginTop: -40,
   },
-  
   innerContainer: {
     flex: 1,
     justifyContent: 'flex-start',
@@ -126,5 +142,12 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     color: '#6b4c3b',
     fontWeight: 'bold',
+  },
+  errorText: {
+    color: '#a94442',
+    fontSize: 14,
+    marginBottom: 10,
+    marginTop: -10,
+    marginLeft: 5,
   },
 });
