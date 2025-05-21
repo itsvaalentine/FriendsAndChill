@@ -9,11 +9,12 @@ const Header = ({ navigation, onSearch, setShowLoginModal  }) => {
   
 
 
-  const handleSearch = async (query) => {
-    if (query.trim()) {
+  const handleSearch = () => {
+    if (searchQuery.trim()) {
       setShowLoginModal(true);
     }
   };
+
 
 
   return (
@@ -31,7 +32,7 @@ const Header = ({ navigation, onSearch, setShowLoginModal  }) => {
               placeholderTextColor="#aaa"
               value={searchQuery}
               onChangeText={setSearchQuery}
-              onSubmitEditing={handleSearch}
+              onSubmitEditing={() => handleSearch()}
               autoFocus
             />
             <TouchableOpacity 
@@ -85,9 +86,7 @@ const MovieItem = ({ item, onPress }) => {
     <TouchableOpacity 
       onPress={onPress}
       onLongPress={handleHoverIn}
-      onMouseEnter={() => setIsHovered(true)}
-      onMouseLeave={() => setIsHovered(false)}
-      style={[styles.item, isHovered && styles.itemHovered]}
+      
     >
 
       <Image 
