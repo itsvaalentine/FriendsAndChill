@@ -1,21 +1,22 @@
-// ACTUALIZADO: MovieItem con validación de poster y modal de info
 import React, { useState } from 'react';
 import { View, Text, Image, TouchableOpacity, Modal, StyleSheet } from 'react-native';
 import { getMovieDetails, getByCategory, getTrending, category, movieType, tvType } from '../services/tmdb';
-// import { movieType as movieTypeEnum, tvType as tvTypeEnum } from '../services/tmdb';
-// import { getMovieDetails as getMovieDetailsService } from '../services/tmdb';
-import { Modal } from 'react-native';
+import { Modal } from 'react-native-web';
 
 const MovieItem = ({ item, onPress }) => {
-  if (!item || !item.poster) return null;
+  if (!item || !item.poster || !item.title) return null;
 
   const [showModal, setShowModal] = useState(false);
   const [details, setDetails] = useState(null);
 
   const handleOpenModal = async () => {
     if (!details) {
-      const movieDetails = await getMovieDetails(item.id);
-      setDetails(movieDetails);
+      try {
+        const movieDetails = await getMovieDetails(item.id);
+        setDetails(movieDetails);
+      } catch (err) {
+        console.error('Error al obtener detalles:', err);
+      }
     }
     setShowModal(true);
   };
@@ -23,7 +24,7 @@ const MovieItem = ({ item, onPress }) => {
   return (
     <>
       <TouchableOpacity style={styles.item} onPress={onPress}>
-        <Image source={{ uri: item.poster }} style={styles.poster} />
+        {!!item.poster && <Image source={{ uri: item.poster }} style={styles.poster} />}
         <Text style={styles.itemTitle} numberOfLines={1}>{item.title}</Text>
         <Text style={styles.rating}>⭐ {item.rating?.toFixed(1) || 'N/A'}</Text>
 
@@ -37,10 +38,10 @@ const MovieItem = ({ item, onPress }) => {
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>{details?.Title || item.title}</Text>
             <Text style={styles.modalText}>{details?.Plot || 'Cargando...'}</Text>
-            {details?.Genre && (
+            {!!details?.Genre && (
               <Text style={styles.modalSubText}>🎬 {details.Genre}</Text>
             )}
-            {details?.Runtime && (
+            {!!details?.Runtime && (
               <Text style={styles.modalSubText}>⏱ {details.Runtime}</Text>
             )}
             <TouchableOpacity onPress={() => setShowModal(false)} style={styles.closeButton}>
@@ -59,19 +60,24 @@ export const fetchInitialData = async (setIsLoading, setTrendingMovies, setPopul
   setIsLoading(true);
   try {
     const trending = await getTrending('movie', 'week');
-    setTrendingMovies(trending.slice(0, 5));
+    console.log('🎬 Trending:', trending);
+    setTrendingMovies((trending || []).filter(m => m?.poster));
 
     const popular = await getByCategory(category.movie, movieType.popular);
-    setPopularMovies(popular);
+    console.log('🔥 Populares:', popular);
+    setPopularMovies((popular || []).filter(m => m?.poster));
 
     const topRated = await getByCategory(category.movie, movieType.top_rated);
-    setTopRatedMovies(topRated);
+    console.log('🏆 Mejor valoradas:', topRated);
+    setTopRatedMovies((topRated || []).filter(m => m?.poster));
 
     const popTV = await getByCategory(category.tv, tvType.popular);
-    setPopularTV(popTV);
+    console.log('📺 Series populares:', popTV);
+    setPopularTV((popTV || []).filter(m => m?.poster));
 
     const topTV = await getByCategory(category.tv, tvType.top_rated);
-    setTopRatedTV(topTV);
+    console.log('⭐ Series top rated:', topTV);
+    setTopRatedTV((topTV || []).filter(m => m?.poster));
 
     setSearchResults(null);
   } catch (error) {
