@@ -391,35 +391,34 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: 'brown',
+    backgroundColor: '#3F3330',
   },
   loading: {
     flex: 1,
     justifyContent: 'center',
     alignItems: 'center',
-    backgroundColor: '#brown',
+    backgroundColor: '#3F3330',
   },
   loadingText: {
-    color: 'white',
+    color: '#F1E9DC',
     fontSize: 18,
   },
-  // Header styles
   header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 15,
     paddingVertical: 12,
-    backgroundColor: '#141414',
+    backgroundColor: '#3F3330',
     borderBottomWidth: 1,
-    borderBottomColor: '#2a2a2a',
+    borderBottomColor: '#A89B8B',
   },
   headerLeft: {
     flexDirection: 'row',
     alignItems: 'center',
   },
   appName: {
-    color: '#ff0000',
+    color: '#C5B08C',
     fontSize: 22,
     fontWeight: 'bold',
   },
@@ -431,21 +430,20 @@ const styles = StyleSheet.create({
     marginRight: 15,
   },
   iconText: {
-    color: 'white',
+    color: '#F1E9DC',
     fontSize: 16,
   },
   loginButton: {
-    backgroundColor: '#ff0000',
+    backgroundColor: '#C5B08C',
     paddingVertical: 8,
     paddingHorizontal: 15,
     borderRadius: 20,
   },
   loginButtonText: {
-    color: 'white',
+    color: '#3A2A23',
     fontWeight: 'bold',
     fontSize: 14,
   },
-  // Search styles
   searchContainer: {
     flexDirection: 'row',
     alignItems: 'center',
@@ -454,9 +452,9 @@ const styles = StyleSheet.create({
   searchInput: {
     flex: 1,
     height: 36,
-    backgroundColor: '#2a2a2a',
+    backgroundColor: '#A89B8B',
     borderRadius: 18,
-    color: 'white',
+    color: '#3A2A23',
     paddingHorizontal: 15,
     marginRight: 10,
   },
@@ -464,17 +462,16 @@ const styles = StyleSheet.create({
     marginRight: 10,
   },
   searchButtonText: {
-    color: 'white',
+    color: '#F1E9DC',
     fontSize: 16,
   },
   closeSearchButton: {
     padding: 5,
   },
   closeSearchText: {
-    color: '#aaa',
+    color: '#A89B8B',
     fontSize: 16,
   },
-  // Search results styles
   searchResultsContainer: {
     padding: 15,
   },
@@ -485,12 +482,12 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   searchResultsTitle: {
-    color: 'white',
+    color: '#F1E9DC',
     fontSize: 22,
     fontWeight: 'bold',
   },
   clearSearchText: {
-    color: '#ff0000',
+    color: '#C5B08C',
     fontSize: 14,
   },
   searchResults: {
@@ -499,7 +496,7 @@ const styles = StyleSheet.create({
   searchResultItem: {
     flexDirection: 'row',
     marginBottom: 15,
-    backgroundColor: '#1a1a1a',
+    backgroundColor: '#5C4434',
     borderRadius: 8,
     overflow: 'hidden',
   },
@@ -512,33 +509,32 @@ const styles = StyleSheet.create({
     padding: 12,
   },
   searchItemTitle: {
-    color: 'white',
+    color: '#F1E9DC',
     fontSize: 16,
     fontWeight: 'bold',
     marginBottom: 4,
   },
   searchItemYear: {
-    color: '#aaa',
+    color: '#C5B08C',
     fontSize: 14,
     marginBottom: 6,
   },
   searchItemRating: {
-    color: '#ffcc00',
+    color: '#E0C97C',
     fontSize: 14,
     marginBottom: 8,
   },
   searchItemOverview: {
-    color: '#ddd',
+    color: '#DDD0C0',
     fontSize: 13,
     lineHeight: 18,
   },
   noResultsText: {
-    color: '#ddd',
+    color: '#DDD0C0',
     fontSize: 16,
     textAlign: 'center',
     marginTop: 30,
   },
-  // Hero styles
   heroContainer: {
     height: 300,
     width: '100%',
@@ -554,24 +550,24 @@ const styles = StyleSheet.create({
     position: 'absolute',
     width: '100%',
     height: '100%',
-    backgroundColor: 'rgba(0,0,0,0.6)',
+    backgroundColor: 'rgba(63,51,48,0.85)',
     justifyContent: 'flex-end',
     transition: 'all 0.3s ease',
   },
   heroOverlayHovered: {
-    backgroundColor: 'rgba(0,0,0,0.75)',
+    backgroundColor: 'rgba(63,51,48,0.95)',
   },
   heroContent: {
     padding: 20,
   },
   heroTitle: {
-    color: 'white',
+    color: '#F1E9DC',
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 10,
   },
   heroOverview: {
-    color: '#ddd',
+    color: '#DDD0C0',
     fontSize: 14,
     marginBottom: 15,
     transition: 'all 0.3s ease',
@@ -582,33 +578,31 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   heroRating: {
-    color: '#ffcc00',
+    color: '#E0C97C',
     fontSize: 16,
     fontWeight: 'bold',
   },
   watchButton: {
-    backgroundColor: '#ff0000',
+    backgroundColor: '#C5B08C',
     paddingVertical: 10,
     paddingHorizontal: 20,
     borderRadius: 30,
     alignSelf: 'flex-start',
   },
   watchButtonText: {
-    color: 'white',
+    color: '#3A2A23',
     fontWeight: 'bold',
   },
-  // Section styles
   sectionContainer: {
     marginBottom: 20,
     paddingHorizontal: 10,
   },
   sectionTitle: {
-    color: 'white',
+    color: '#F1E9DC',
     fontSize: 18,
     fontWeight: 'bold',
     marginVertical: 15,
   },
-  // Movie item styles
   item: {
     marginRight: 10,
     width: 120,
@@ -626,114 +620,112 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   itemTitle: {
-  color: 'white',
-  fontSize: 12,
-  marginTop: 5,
-  textAlign: 'center',
-  paddingHorizontal: 4,
+    color: '#F1E9DC',
+    fontSize: 12,
+    marginTop: 5,
+    textAlign: 'center',
+    paddingHorizontal: 4,
   },
   rating: {
-    color: '#ffcc00',
+    color: '#E0C97C',
     fontSize: 12,
     marginTop: 2,
   },
-  // Hover card styles
   hoverCard: {
-  backgroundColor: '#1f1f1f',
-  padding: 10,
-  borderRadius: 8,
-  elevation: 5, // Android
-  shadowColor: '#000', // iOS
-  shadowOffset: { width: 0, height: 4 },
-  shadowOpacity: 0.3,
-  shadowRadius: 5,
-},
+    backgroundColor: '#5C4434',
+    padding: 10,
+    borderRadius: 8,
+    elevation: 5,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 5,
+  },
   hoverCardTitle: {
-    color: 'white',
+    color: '#F1E9DC',
     fontSize: 16,
     fontWeight: 'bold',
-    marginBottom: 4,  
+    marginBottom: 4,
   },
   hoverTitle: {
-    color: 'white',
+    color: '#F1E9DC',
     fontSize: 14,
     fontWeight: 'bold',
     marginBottom: 4,
   },
   hoverYear: {
-    color: '#aaa',
+    color: '#A89B8B',
     fontSize: 12,
     marginBottom: 8,
   },
   hoverDescription: {
-    color: '#ddd',
+    color: '#DDD0C0',
     fontSize: 12,
     lineHeight: 16,
     marginBottom: 8,
   },
   hoverGenre: {
-    color: '#bbb',
+    color: '#A89B8B',
     fontSize: 11,
     marginBottom: 4,
   },
   hoverRuntime: {
-    color: '#bbb',
+    color: '#A89B8B',
     fontSize: 11,
     marginBottom: 8,
   },
   hoverProvidersTitle: {
-    color: '#aaa',
+    color: '#C5B08C',
     fontSize: 11,
     marginBottom: 2,
   },
   hoverProviders: {
-    color: '#3a9bdc',
-    fontSize: 11,
-  },
-modalOverlay: {
-  flex: 1,
-  justifyContent: 'center',
-  alignItems: 'center',
-  backgroundColor: 'rgba(0,0,0,0.7)',
-},
-modalContent: {
-  width: '80%',
-  backgroundColor: '#1c1c1c',
-  borderRadius: 10,
-  padding: 20,
-  alignItems: 'center',
-},
-modalTitle: {
-  color: '#fff',
-  fontSize: 18,
-  fontWeight: 'bold',
-  marginBottom: 10,
-  textAlign: 'center',
-},
-modalText: {
-  color: '#ddd',
-  fontSize: 14,
-  textAlign: 'center',
-  marginBottom: 20,
-},
-modalButtonPrimary: {
-  backgroundColor: '#ff0000',
-  paddingVertical: 10,
-  paddingHorizontal: 25,
-  borderRadius: 8,
-  marginBottom: 10,
-},
-modalButtonSecondary: {
-  paddingVertical: 10,
-  paddingHorizontal: 25,
-},
-modalButtonText: {
-  color: '#fff',
-  fontWeight: 'bold',
-},
-modalButtonTextSecondary: {
-  color: '#ccc',
-  fontWeight: 'bold',
-},
-
+    color: '#C5B08C',
+    fontSize: 11,
+  },
+  modalOverlay: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: 'rgba(0,0,0,0.7)',
+  },
+  modalContent: {
+    width: '80%',
+    backgroundColor: '#F1E9DC',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+  },
+  modalTitle: {
+    color: '#5C4434',
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+  modalText: {
+    color: '#3A2A23',
+    fontSize: 14,
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+  modalButtonPrimary: {
+    backgroundColor: '#C5B08C',
+    paddingVertical: 10,
+    paddingHorizontal: 25,
+    borderRadius: 8,
+    marginBottom: 10,
+  },
+  modalButtonSecondary: {
+    paddingVertical: 10,
+    paddingHorizontal: 25,
+  },
+  modalButtonText: {
+    color: '#3A2A23',
+    fontWeight: 'bold',
+  },
+  modalButtonTextSecondary: {
+    color: '#A89B8B',
+    fontWeight: 'bold',
+  },
 });
