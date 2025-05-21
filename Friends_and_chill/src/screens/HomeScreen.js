@@ -17,6 +17,8 @@ const Header = ({ navigation, onSearch, setShowLoginModal  }) => {
 
 
 
+
+
   return (
     <View style={styles.header}>
       <View style={styles.headerLeft}>
@@ -32,7 +34,8 @@ const Header = ({ navigation, onSearch, setShowLoginModal  }) => {
               placeholderTextColor="#aaa"
               value={searchQuery}
               onChangeText={setSearchQuery}
-              onSubmitEditing={() => handleSearch()}
+              onSubmitEditing={handleSearch}
+              onPress={handleSearch}
               autoFocus
             />
             <TouchableOpacity 
@@ -58,7 +61,7 @@ const Header = ({ navigation, onSearch, setShowLoginModal  }) => {
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.loginButton} 
-              onPress={() => navigation.navigate('Login')}
+              onPress={() => navigation.navigate('LoginScreen')}
             >
               <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
             </TouchableOpacity>
@@ -583,9 +586,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
   },
   itemTitle: {
-    color: 'white',
-    fontSize: 12,
-    marginTop: 5,
+  color: 'white',
+  fontSize: 12,
+  marginTop: 5,
+  textAlign: 'center',
+  paddingHorizontal: 4,
   },
   rating: {
     color: '#ffcc00',
