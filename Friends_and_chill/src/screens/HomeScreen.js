@@ -57,7 +57,7 @@ const Header = ({ navigation, onSearch }) => {
             </TouchableOpacity>
             <TouchableOpacity 
               style={styles.loginButton} 
-              onPress={() => navigation.navigate('Login')}
+              onPress={() => navigation.navigate('LoginScreen')}
             >
               <Text style={styles.loginButtonText}>Iniciar Sesión</Text>
             </TouchableOpacity>
