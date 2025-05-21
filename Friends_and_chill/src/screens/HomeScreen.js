@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, TextInput } from 'react-native';
 import { getByCategory, getTrending, getMovieDetails, searchMovies, category, movieType, tvType } from '../services/tmdb';
+import { Modal } from 'react-native';
+
 
 // Componente de Header
 const Header = ({ navigation, onSearch, setShowLoginModal  }) => {
@@ -255,11 +257,19 @@ export default function HomeScreen({ navigation }) {
         onSearch={handleSearch}
         setShowLoginModal={setShowLoginModal}
       />
-      {showLoginModal && (
+      <Modal
+        visible={showLoginModal}
+        transparent
+        animationType="fade"
+        onRequestClose={() => setShowLoginModal(false)}
+      >
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <Text style={styles.modalTitle}>Inicia esta aventura iniciando sesión</Text>
-            <Text style={styles.modalText}>Para encontrar tu selección personalizada de películas</Text>
+            <Text style={styles.modalText}>
+              Para encontrar tu selección personalizada de películas
+            </Text>
+
             <TouchableOpacity
               style={styles.modalButtonPrimary}
               onPress={() => {
@@ -269,15 +279,17 @@ export default function HomeScreen({ navigation }) {
             >
               <Text style={styles.modalButtonText}>Iniciar Sesión</Text>
             </TouchableOpacity>
+
             <TouchableOpacity
-              onPress={() => setShowLoginModal(false)}
               style={styles.modalButtonSecondary}
+              onPress={() => setShowLoginModal(false)}
             >
               <Text style={styles.modalButtonTextSecondary}>Cancelar</Text>
             </TouchableOpacity>
           </View>
         </View>
-        )}
+      </Modal>
+
       <ScrollView>
         {searchResults ? (
           // Search results view
@@ -678,4 +690,50 @@ const styles = StyleSheet.create({
     color: '#3a9bdc',
     fontSize: 11,
   },
+modalOverlay: {
+  flex: 1,
+  justifyContent: 'center',
+  alignItems: 'center',
+  backgroundColor: 'rgba(0,0,0,0.7)',
+},
+modalContent: {
+  width: '80%',
+  backgroundColor: '#1c1c1c',
+  borderRadius: 10,
+  padding: 20,
+  alignItems: 'center',
+},
+modalTitle: {
+  color: '#fff',
+  fontSize: 18,
+  fontWeight: 'bold',
+  marginBottom: 10,
+  textAlign: 'center',
+},
+modalText: {
+  color: '#ddd',
+  fontSize: 14,
+  textAlign: 'center',
+  marginBottom: 20,
+},
+modalButtonPrimary: {
+  backgroundColor: '#ff0000',
+  paddingVertical: 10,
+  paddingHorizontal: 25,
+  borderRadius: 8,
+  marginBottom: 10,
+},
+modalButtonSecondary: {
+  paddingVertical: 10,
+  paddingHorizontal: 25,
+},
+modalButtonText: {
+  color: '#fff',
+  fontWeight: 'bold',
+},
+modalButtonTextSecondary: {
+  color: '#ccc',
+  fontWeight: 'bold',
+},
+
 });
