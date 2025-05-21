@@ -1,13 +1,20 @@
+// MainScreen.js
 import React, { useEffect, useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView,
-  TouchableOpacity, Image, TextInput, Modal, Button
+  TouchableOpacity, Image, TextInput, Modal
 } from 'react-native';
 import {
-  getTrending, getByCategory, getMovieDetails, searchMovies,
-  movieType, tvType, category
+  getTrending,
+  getByCategory,
+  getMovieDetails,
+  getWatchProviders,
+  searchMovies,
+  searchTV,
+  movieType,
+  tvType,
+  category
 } from '../services/tmdb';
-
 import { Ionicons } from '@expo/vector-icons';
 
 export default function MainScreen() {
@@ -20,6 +27,7 @@ export default function MainScreen() {
   const [modalVisible, setModalVisible] = useState(false);
 
   const handleSearch = async () => {
+    if (!searchQuery.trim()) return;
     const movies = await searchMovies(searchQuery);
     const series = await searchTV(searchQuery);
     if (movies.ok) setMovieResults(movies.data.results);
@@ -35,7 +43,10 @@ export default function MainScreen() {
     const details = await getMovieDetails(item.id, type);
     const providers = await getWatchProviders(item.id, type);
     if (details.ok && providers.ok) {
-      setSelected({ ...details.data, platforms: providers.data.results.MX?.flatrate || [] });
+      setSelected({
+        ...details.data,
+        platforms: providers.data.results?.MX?.flatrate || []
+      });
       setModalVisible(true);
     }
   };
@@ -204,4 +215,3 @@ const styles = StyleSheet.create({
     fontSize: 14,
   },
 });
-
