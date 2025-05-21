@@ -391,7 +391,7 @@ export default function HomeScreen({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#grey',
+    backgroundColor: 'brown',
   },
   loading: {
     flex: 1,
