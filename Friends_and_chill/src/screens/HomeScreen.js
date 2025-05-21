@@ -6,12 +6,15 @@ import { getByCategory, getTrending, getMovieDetails, searchMovies, category, mo
 const Header = ({ navigation, onSearch }) => {
   const [searchQuery, setSearchQuery] = useState('');
   const [showSearch, setShowSearch] = useState(false);
+  const [showLoginModal, setShowLoginModal] = React.useState(false);
 
-  const handleSearch = () => {
-    if (searchQuery.trim()) {
-      onSearch(searchQuery);
+
+  const handleSearch = async (query) => {
+    if (query.trim()) {
+      setShowLoginModal(true);
     }
   };
+
 
   return (
     <View style={styles.header}>
@@ -80,11 +83,13 @@ const MovieItem = ({ item, onPress }) => {
 
   return (
     <TouchableOpacity 
-      style={[styles.item, isHovered && styles.itemHovered]} 
       onPress={onPress}
-      onMouseEnter={handleHoverIn}
+      onLongPress={handleHoverIn}
+      onMouseEnter={() => setIsHovered(true)}
       onMouseLeave={() => setIsHovered(false)}
+      style={[styles.item, isHovered && styles.itemHovered]}
     >
+
       <Image 
         source={{ uri: item.poster }} 
         style={styles.poster}
@@ -119,6 +124,7 @@ const MovieItem = ({ item, onPress }) => {
     </TouchableOpacity>
   );
 };
+
 
 // Componente de lista horizontal sin botón "Ver más"
 const MovieListRow = ({ title, data, navigation, category }) => (
@@ -240,6 +246,34 @@ export default function HomeScreen({ navigation }) {
         onSearch={handleSearch} 
       />
       
+      {showLoginModal && (
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>¿Quieres ver tus películas favoritas?</Text>
+            <Text style={styles.modalText}>Para encontrar tu selección personalizada, inicia sesión.</Text>
+
+            <View style={styles.modalButtons}>
+              <TouchableOpacity
+                style={styles.modalButtonPrimary}
+                onPress={() => {
+                  setShowLoginModal(false);
+                  navigation.navigate('Login');
+                }}
+              >
+                <Text style={styles.modalButtonText}>Iniciar sesión</Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={styles.modalButtonSecondary}
+                onPress={() => setShowLoginModal(false)}
+              >
+                <Text style={styles.modalButtonTextSecondary}>Cancelar</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      )}
+
       <ScrollView>
         {searchResults ? (
           // Search results view
@@ -587,15 +621,20 @@ const styles = StyleSheet.create({
   },
   // Hover card styles
   hoverCard: {
-    position: 'absolute',
-    top: 0,
-    left: 0,
-    width: 220,
-    backgroundColor: '#1f1f1f',
-    padding: 10,
-    borderRadius: 8,
-    boxShadow: '0 4px 15px rgba(0, 0, 0, 0.5)',
-    zIndex: 10,
+  backgroundColor: '#1f1f1f',
+  padding: 10,
+  borderRadius: 8,
+  elevation: 5, // Android
+  shadowColor: '#000', // iOS
+  shadowOffset: { width: 0, height: 4 },
+  shadowOpacity: 0.3,
+  shadowRadius: 5,
+},
+  hoverCardTitle: {
+    color: 'white',
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginBottom: 4,  
   },
   hoverTitle: {
     color: 'white',
@@ -633,4 +672,74 @@ const styles = StyleSheet.create({
     color: '#3a9bdc',
     fontSize: 11,
   },
+  modalOverlay: {
+  position: 'absolute',
+  top: 0,
+  left: 0,
+  right: 0,
+  bottom: 0,
+  backgroundColor: 'rgba(0, 0, 0, 0.7)',
+  justifyContent: 'center',
+  alignItems: 'center',
+  zIndex: 999,
+  },
+
+  modalContent: {
+    width: '85%',
+    backgroundColor: '#1f1f1f',
+    borderRadius: 10,
+    padding: 20,
+    alignItems: 'center',
+    elevation: 10,
+  },
+
+  modalTitle: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: 'white',
+    marginBottom: 10,
+    textAlign: 'center',
+  },
+
+  modalText: {
+    fontSize: 14,
+    color: '#ccc',
+    textAlign: 'center',
+    marginBottom: 20,
+  },
+
+  modalButtons: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    width: '100%',
+  },
+
+  modalButtonPrimary: {
+    backgroundColor: '#ff0000',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    flex: 1,
+    marginRight: 10,
+  },
+
+  modalButtonSecondary: {
+    backgroundColor: '#2a2a2a',
+    paddingVertical: 10,
+    paddingHorizontal: 20,
+    borderRadius: 5,
+    flex: 1,
+  },
+
+  modalButtonText: {
+    color: 'white',
+    textAlign: 'center',
+    fontWeight: 'bold',
+  },
+
+  modalButtonTextSecondary: {
+    color: '#aaa',
+    textAlign: 'center',
+  }
+
 });
