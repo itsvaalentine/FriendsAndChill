@@ -1,9 +1,15 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, TextInput } from 'react-native';
-import { getByCategory, getTrending, getMovieDetails, searchMovies, category, movieType, tvType } from '../services/tmdb';
+import { View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
+import { getByCategory, getTrending, getMovieDetails, category, movieType, tvType } from '../services/tmdb';
+import { Modal } from 'react-native-paper';
+
+
 
 // Componente de Header
 const MovieItem = ({ item, onPress }) => {
+  const MovieItem = ({ item, onPress }) => {
+  if (!item || !item.poster) return null; // Evita crasheo si falta info
+
   const [showModal, setShowModal] = useState(false);
   const [details, setDetails] = useState(null);
 
@@ -14,6 +20,40 @@ const MovieItem = ({ item, onPress }) => {
     }
     setShowModal(true);
   };
+
+  return (
+    <>
+      <TouchableOpacity style={styles.item} onPress={onPress}>
+        <Image source={{ uri: item.poster }} style={styles.poster} />
+        <Text style={styles.itemTitle} numberOfLines={1}>{item.title}</Text>
+        <Text style={styles.rating}>⭐ {item.rating?.toFixed(1) || 'N/A'}</Text>
+
+        <TouchableOpacity onPress={handleOpenModal} style={styles.moreButton}>
+          <Text style={styles.moreText}>⋯</Text>
+        </TouchableOpacity>
+      </TouchableOpacity>
+
+      <Modal visible={showModal} transparent animationType="fade">
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>{details?.Title || item.title}</Text>
+            <Text style={styles.modalText}>{details?.Plot || 'Cargando...'}</Text>
+            {details?.Genre && (
+              <Text style={styles.modalSubText}>🎬 {details.Genre}</Text>
+            )}
+            {details?.Runtime && (
+              <Text style={styles.modalSubText}>⏱ {details.Runtime}</Text>
+            )}
+            <TouchableOpacity onPress={() => setShowModal(false)} style={styles.closeButton}>
+              <Text style={styles.closeButtonText}>Cerrar</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
+    </>
+  );
+};
+
 
   return (
     <>
