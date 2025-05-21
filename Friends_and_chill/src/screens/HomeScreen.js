@@ -1,14 +1,13 @@
+// ACTUALIZADO: MovieItem con validación de poster y modal de info
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Image} from 'react-native';
-import { getByCategory, getTrending, getMovieDetails, category, movieType, tvType } from '../services/tmdb';
-import { Modal } from 'react-native-paper';
+import { View, Text, Image, TouchableOpacity, Modal, StyleSheet } from 'react-native';
+import { getMovieDetails, getByCategory, getTrending, category, movieType, tvType } from '../services/tmdb';
+// import { movieType as movieTypeEnum, tvType as tvTypeEnum } from '../services/tmdb';
+// import { getMovieDetails as getMovieDetailsService } from '../services/tmdb';
+import { Modal } from 'react-native';
 
-
-
-// Componente de Header
 const MovieItem = ({ item, onPress }) => {
-  const MovieItem = ({ item, onPress }) => {
-  if (!item || !item.poster) return null; // Evita crasheo si falta info
+  if (!item || !item.poster) return null;
 
   const [showModal, setShowModal] = useState(false);
   const [details, setDetails] = useState(null);
@@ -54,50 +53,14 @@ const MovieItem = ({ item, onPress }) => {
   );
 };
 
-
-  return (
-    <>
-      <TouchableOpacity style={styles.item} onPress={onPress}>
-        <Image source={{ uri: item.poster }} style={styles.poster} />
-        <Text style={styles.itemTitle} numberOfLines={1}>{item.title}</Text>
-        <Text style={styles.rating}>⭐ {item.rating?.toFixed(1) || 'N/A'}</Text>
-
-        <TouchableOpacity onPress={handleOpenModal} style={styles.moreButton}>
-          <Text style={styles.moreText}>⋯</Text>
-        </TouchableOpacity>
-      </TouchableOpacity>
-
-      <Modal visible={showModal} transparent animationType="fade">
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>{details?.Title || item.title}</Text>
-            <Text style={styles.modalText}>{details?.Plot || 'Cargando...'}</Text>
-            {details?.Genre && (
-              <Text style={styles.modalSubText}>🎬 {details.Genre}</Text>
-            )}
-            {details?.Runtime && (
-              <Text style={styles.modalSubText}>⏱ {details.Runtime}</Text>
-            )}
-            <TouchableOpacity onPress={() => setShowModal(false)} style={styles.closeButton}>
-              <Text style={styles.closeButtonText}>Cerrar</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
-    </>
-  );
-};
-
 export default MovieItem;
 
 export const fetchInitialData = async (setIsLoading, setTrendingMovies, setPopularMovies, setTopRatedMovies, setPopularTV, setTopRatedTV, setSearchResults) => {
   setIsLoading(true);
   try {
-    // Fetch trending for hero
     const trending = await getTrending('movie', 'week');
     setTrendingMovies(trending.slice(0, 5));
 
-    // Fetch section data
     const popular = await getByCategory(category.movie, movieType.popular);
     setPopularMovies(popular);
 
