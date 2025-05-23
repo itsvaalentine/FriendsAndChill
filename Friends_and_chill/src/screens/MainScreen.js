@@ -40,7 +40,8 @@ export default function MainScreen() {
     const formattedMovies = movies.map(m => ({
       id: m.imdbID,
       title: m.Title,
-      poster_path:`${IMAGE_BASE_URL}${item.poster_path}`,
+      poster_path: m.Poster,
+      overview: m.Plot,
       overview: '',
     }));
 
