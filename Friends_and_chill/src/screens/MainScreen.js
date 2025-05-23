@@ -95,6 +95,7 @@ export default function MainScreen() {
                     ? item.poster_path
                     : `https://image.tmdb.org/t/p/w300${item.poster_path}`,
                 }}
+
                 style={styles.poster}
               />
             </TouchableOpacity>
