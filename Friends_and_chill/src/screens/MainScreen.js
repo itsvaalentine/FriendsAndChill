@@ -3,7 +3,11 @@ import {
   View, Text, StyleSheet, ScrollView,
   TouchableOpacity, Image, TextInput, Modal
 } from 'react-native';
-import { getByCategory, getTrending, getMovieDetails, searchMovies, category, movieType, tvType, searchTV } from '../services/tmdb';
+import {
+  getByCategory, getTrending, getMovieDetails,
+  searchMovies, category, movieType, tvType,
+  searchTV, getWatchProviders
+} from '../services/tmdb';
 import { Ionicons } from '@expo/vector-icons';
 
 export default function MainScreen() {
@@ -14,6 +18,18 @@ export default function MainScreen() {
   const [watchlistSeries, setWatchlistSeries] = useState([]);
   const [selected, setSelected] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [trendingMovies, setTrendingMovies] = useState([]);
+  const [trendingTV, setTrendingTV] = useState([]);
+
+  useEffect(() => {
+    const fetchTrending = async () => {
+      const movies = await getTrending('movie');
+      const tv = await getTrending('tv');
+      if (movies.ok) setTrendingMovies(movies.data.results);
+      if (tv.ok) setTrendingTV(tv.data.results);
+    };
+    fetchTrending();
+  }, []);
 
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
@@ -24,7 +40,6 @@ export default function MainScreen() {
   };
 
   const handleAdd = (item, type) => {
-    // ✅ Avoid duplicates
     if (type === 'movie') {
       setWatchlistMovies(prev => prev.find(m => m.id === item.id) ? prev : [...prev, item]);
     } else {
@@ -81,6 +96,8 @@ export default function MainScreen() {
         onSubmitEditing={handleSearch}
       />
       <ScrollView>
+        {renderHorizontal('🔥 Películas populares', trendingMovies, 'movie')}
+        {renderHorizontal('📺 Series populares', trendingTV, 'tv')}
         {renderHorizontal('➕ Agrega tu lista de películas por ver', movieResults, 'movie')}
         {renderHorizontal('➕ Agrega tu lista de series por ver', tvResults, 'tv')}
         {renderHorizontal('🎯 Tu lista de películas', watchlistMovies, 'movie')}
@@ -119,17 +136,17 @@ export default function MainScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fdf6e3', // Sand tone
+    backgroundColor: '#fdf6e3',
     padding: 10,
   },
   header: {
-    color: '#4e342e', // Dark brown
+    color: '#4e342e',
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 15,
   },
   searchInput: {
-    backgroundColor: '#e1c699', // Light brown
+    backgroundColor: '#e1c699',
     color: '#4e342e',
     borderRadius: 10,
     paddingHorizontal: 15,
