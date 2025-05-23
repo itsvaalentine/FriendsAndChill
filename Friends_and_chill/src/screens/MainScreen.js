@@ -40,7 +40,7 @@ export default function MainScreen() {
     const formattedMovies = movies.map(m => ({
       id: m.imdbID,
       title: m.Title,
-      poster_path: m.Poster.replace('https://image.tmdb.org/t/p/w500', ''), // extraer path para reutilizar renderHorizontal
+      poster_path:`${IMAGE_BASE_URL}${item.poster_path}`,
       overview: '',
     }));
 
