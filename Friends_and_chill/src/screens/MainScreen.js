@@ -142,7 +142,7 @@ export default function MainScreen() {
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>{selected.title}</Text>
             <Image
-              source={{ uri: selected.poster }}
+              source={{ uri: item.poster }}
               style={styles.modalImage}
             />
             <ScrollView style={{ padding: 10 }}>
