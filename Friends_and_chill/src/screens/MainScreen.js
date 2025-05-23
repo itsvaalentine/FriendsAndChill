@@ -1,11 +1,9 @@
-// MainScreen.js
 import React, { useEffect, useState } from 'react';
 import {
   View, Text, StyleSheet, ScrollView,
   TouchableOpacity, Image, TextInput, Modal
 } from 'react-native';
 import { getByCategory, getTrending, getMovieDetails, searchMovies, category, movieType, tvType, searchTV } from '../services/tmdb';
-
 import { Ionicons } from '@expo/vector-icons';
 
 export default function MainScreen() {
@@ -26,8 +24,12 @@ export default function MainScreen() {
   };
 
   const handleAdd = (item, type) => {
-    if (type === 'movie') setWatchlistMovies(prev => [...prev, item]);
-    else setWatchlistSeries(prev => [...prev, item]);
+    // ✅ Avoid duplicates
+    if (type === 'movie') {
+      setWatchlistMovies(prev => prev.find(m => m.id === item.id) ? prev : [...prev, item]);
+    } else {
+      setWatchlistSeries(prev => prev.find(s => s.id === item.id) ? prev : [...prev, item]);
+    }
   };
 
   const openModal = async (item, type) => {
@@ -73,7 +75,7 @@ export default function MainScreen() {
       <TextInput
         style={styles.searchInput}
         placeholder="Busca películas o series..."
-        placeholderTextColor="#999"
+        placeholderTextColor="#6e5844"
         value={searchQuery}
         onChangeText={setSearchQuery}
         onSubmitEditing={handleSearch}
@@ -117,18 +119,18 @@ export default function MainScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#1c1c1e',
+    backgroundColor: '#fdf6e3', // Sand tone
     padding: 10,
   },
   header: {
-    color: '#fff',
+    color: '#4e342e', // Dark brown
     fontSize: 24,
     fontWeight: 'bold',
     marginBottom: 15,
   },
   searchInput: {
-    backgroundColor: '#2c2c2e',
-    color: '#fff',
+    backgroundColor: '#e1c699', // Light brown
+    color: '#4e342e',
     borderRadius: 10,
     paddingHorizontal: 15,
     height: 40,
@@ -138,7 +140,7 @@ const styles = StyleSheet.create({
     marginBottom: 30,
   },
   sectionTitle: {
-    color: '#fff',
+    color: '#4e342e',
     fontSize: 18,
     fontWeight: '600',
     marginBottom: 10,
@@ -152,9 +154,10 @@ const styles = StyleSheet.create({
     width: 120,
     height: 180,
     borderRadius: 10,
+    backgroundColor: '#e1c699',
   },
   itemTitle: {
-    color: '#fff',
+    color: '#4e342e',
     fontSize: 12,
     marginTop: 5,
   },
@@ -162,17 +165,17 @@ const styles = StyleSheet.create({
     position: 'absolute',
     top: 5,
     right: 5,
-    backgroundColor: '#000a',
+    backgroundColor: '#7b5e57',
     borderRadius: 12,
     padding: 2,
   },
   modalContainer: {
     flex: 1,
-    backgroundColor: '#1c1c1e',
+    backgroundColor: '#fdf6e3',
     padding: 20,
   },
   modalTitle: {
-    color: '#fff',
+    color: '#4e342e',
     fontSize: 22,
     fontWeight: 'bold',
     marginBottom: 10,
@@ -184,25 +187,25 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   modalOverview: {
-    color: '#ccc',
+    color: '#5c4033',
     fontSize: 14,
     textAlign: 'justify',
     marginBottom: 10,
   },
   closeButton: {
-    color: '#ff5252',
+    color: '#bc8f8f',
     fontSize: 18,
     textAlign: 'center',
     marginTop: 20,
   },
   platformTitle: {
-    color: '#fff',
+    color: '#4e342e',
     fontSize: 16,
     marginTop: 10,
     fontWeight: '600',
   },
   platformName: {
-    color: '#ccc',
+    color: '#5c4033',
     fontSize: 14,
   },
 });
