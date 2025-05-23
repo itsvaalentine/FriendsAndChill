@@ -91,12 +91,7 @@ export default function MainScreen() {
           <View key={item.id} style={styles.itemContainer}>
             <TouchableOpacity onPress={() => openModal(item, type)}>
               <Image
-                source={{
-                  uri: item.poster_path?.startsWith('http')
-                    ? item.poster_path
-                    : `https://image.tmdb.org/t/p/w300${item.poster_path}`,
-                }}
-
+                source={{ uri: item.poster }}
                 style={styles.poster}
               />
             </TouchableOpacity>
@@ -112,6 +107,7 @@ export default function MainScreen() {
       </ScrollView>
     </View>
   );
+
 
   return (
     <View style={styles.container}>
@@ -141,17 +137,15 @@ export default function MainScreen() {
         >
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>{selected.title}</Text>
-            {data.map(item => (
-              <View key={item.id}>
-                <Image source={{ uri: item.poster }} />
-                {item.backdrop && (
-                  <Image
-                    source={{ uri: item.backdrop }}
-                    style={styles.poster}
-                  />
-                )}
-              </View>
-            ))}
+
+            <Image source={{ uri: selected.poster }} style={styles.modalImage} />
+
+            {selected.backdrop && (
+              <Image
+                source={{ uri: selected.backdrop }}
+                style={styles.modalImage}
+              />
+            )}
 
             <ScrollView style={{ padding: 10 }}>
               <Text style={styles.modalOverview}>{selected.overview}</Text>
@@ -164,12 +158,14 @@ export default function MainScreen() {
                 <Text style={styles.platformName}>No disponible en streaming</Text>
               )}
             </ScrollView>
+
             <TouchableOpacity onPress={() => setModalVisible(false)}>
               <Text style={styles.closeButton}>Cerrar</Text>
             </TouchableOpacity>
           </View>
         </Modal>
       )}
+
     </View>
   );
 }
