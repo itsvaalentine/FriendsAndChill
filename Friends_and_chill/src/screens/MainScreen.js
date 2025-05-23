@@ -40,7 +40,7 @@ export default function MainScreen() {
     const formattedMovies = movies.map(m => ({
       id: m.imdbID,
       title: m.Title,
-      poster_path: m.Poster,
+      poster: m.Poster,
       overview: m.Plot,
       overview: '',
     }));
@@ -49,7 +49,7 @@ export default function MainScreen() {
       ? series.data.results.map(s => ({
           id: s.id.toString(),
           title: s.name,
-          poster_path: s.poster_path,
+          poster: s.poster_path ? `https://image.tmdb.org/t/p/w300${s.poster_path}` : 'https://via.placeholder.com/300x450?text=No+Image',
           overview: s.overview,
         }))
       : [];
@@ -141,10 +141,18 @@ export default function MainScreen() {
         >
           <View style={styles.modalContainer}>
             <Text style={styles.modalTitle}>{selected.title}</Text>
-            <Image
-              source={{ uri: item.poster }}
-              style={styles.modalImage}
-            />
+            {data.map(item => (
+              <View key={item.id}>
+                <Image source={{ uri: item.poster }} />
+                {item.backdrop && (
+                  <Image
+                    source={{ uri: item.backdrop }}
+                    style={styles.poster}
+                  />
+                )}
+              </View>
+            ))}
+
             <ScrollView style={{ padding: 10 }}>
               <Text style={styles.modalOverview}>{selected.overview}</Text>
               <Text style={styles.platformTitle}>Disponible en:</Text>
