@@ -204,7 +204,6 @@ const styles = StyleSheet.create({
     width: 120,
     height: 180,
     borderRadius: 10,
-    backgroundColor: '#e1c699',
   },
   itemTitle: {
     color: '#4e342e',
