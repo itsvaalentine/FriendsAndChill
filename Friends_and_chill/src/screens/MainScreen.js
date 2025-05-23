@@ -1,18 +1,14 @@
 import React, { useEffect, useState } from 'react';
 import {
-  View, Text, StyleSheet, TextInput,
-  Modal, Image, ScrollView, TouchableOpacity
+  View, Text, StyleSheet, ScrollView,
+  TouchableOpacity, Image, TextInput, Modal
 } from 'react-native';
-
-import { Ionicons } from '@expo/vector-icons';
 import {
-  searchMovies,
-  searchTV,
-  getTrending,
-  getMovieDetails,
+  getByCategory, getTrending, getMovieDetails,
+  searchMovies, category, movieType, tvType,
+  searchTV
 } from '../services/tmdb';
-
-import MovieList from '../components/MovieList'; // Ajusta ruta si es necesario
+import { Ionicons } from '@expo/vector-icons';
 
 export default function MainScreen() {
   const [searchQuery, setSearchQuery] = useState('');
@@ -20,12 +16,11 @@ export default function MainScreen() {
   const [tvResults, setTVResults] = useState([]);
   const [watchlistMovies, setWatchlistMovies] = useState([]);
   const [watchlistSeries, setWatchlistSeries] = useState([]);
-  const [trendingMovies, setTrendingMovies] = useState([]);
-  const [trendingTV, setTrendingTV] = useState([]);
   const [selected, setSelected] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [trendingMovies, setTrendingMovies] = useState([]);
+  const [trendingTV, setTrendingTV] = useState([]);
 
-  // Fetch trending on load
   useEffect(() => {
     const fetchTrending = async () => {
       const movies = await getTrending('movie');
@@ -36,36 +31,30 @@ export default function MainScreen() {
     fetchTrending();
   }, []);
 
-  // Search handler
   const handleSearch = async () => {
     if (!searchQuery.trim()) return;
-
     const movies = await searchMovies(searchQuery);
     const series = await searchTV(searchQuery);
 
-    if (Array.isArray(movies)) {
-      const formatted = movies.map(m => ({
-        id: m.imdbID,
-        title: m.Title,
-        poster: m.Poster,
-        overview: '',
-        mediaType: 'movie',
-      }));
-      setMovieResults(formatted);
-    }
+    // 🔄 Adaptar formato a lo que usa tu renderHorizontal
+    const formattedMovies = movies.map(m => ({
+      id: m.imdbID,
+      title: m.Title,
+      poster_path: m.Poster.replace('https://image.tmdb.org/t/p/w500', ''), // extraer path para reutilizar renderHorizontal
+      overview: '',
+    }));
 
-    if (series.ok) {
-      const formatted = series.data.results.map(s => ({
-        id: s.id.toString(),
-        title: s.name,
-        poster: s.poster_path
-          ? `https://image.tmdb.org/t/p/w500${s.poster_path}`
-          : 'https://via.placeholder.com/500x750',
-        overview: s.overview,
-        mediaType: 'tv',
-      }));
-      setTVResults(formatted);
-    }
+    const formattedTV = series.ok
+      ? series.data.results.map(s => ({
+          id: s.id.toString(),
+          title: s.name,
+          poster_path: s.poster_path,
+          overview: s.overview,
+        }))
+      : [];
+
+    setMovieResults(formattedMovies);
+    setTVResults(formattedTV);
   };
 
   const handleAdd = (item, type) => {
@@ -93,26 +82,53 @@ export default function MainScreen() {
     setModalVisible(true);
   };
 
+  const renderHorizontal = (title, data, type) => (
+    <View style={styles.section}>
+      <Text style={styles.sectionTitle}>{title}</Text>
+      <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+        {data.map(item => (
+          <View key={item.id} style={styles.itemContainer}>
+            <TouchableOpacity onPress={() => openModal(item, type)}>
+              <Image
+                source={{
+                  uri: item.poster_path?.startsWith('http')
+                    ? item.poster_path
+                    : `https://image.tmdb.org/t/p/w300${item.poster_path}`,
+                }}
+                style={styles.poster}
+              />
+            </TouchableOpacity>
+            <TouchableOpacity
+              style={styles.addIcon}
+              onPress={() => handleAdd(item, type)}
+            >
+              <Ionicons name="add-circle" size={24} color="#fff" />
+            </TouchableOpacity>
+            <Text numberOfLines={1} style={styles.itemTitle}>{item.title}</Text>
+          </View>
+        ))}
+      </ScrollView>
+    </View>
+  );
+
   return (
     <View style={styles.container}>
-      <Text style={styles.header}>🍿 Friend'&Chill</Text>
-
+      <Text style={styles.header}>🎬 Friend'&Chill</Text>
       <TextInput
         style={styles.searchInput}
-        placeholder="Buscar películas o series..."
+        placeholder="Busca películas o series..."
         placeholderTextColor="#6e5844"
         value={searchQuery}
         onChangeText={setSearchQuery}
         onSubmitEditing={handleSearch}
       />
-
       <ScrollView>
-        <MovieList title="🔥 Películas populares" data={trendingMovies} type="movie" onAdd={handleAdd} onOpenModal={openModal} />
-        <MovieList title="📺 Series populares" data={trendingTV} type="tv" onAdd={handleAdd} onOpenModal={openModal} />
-        <MovieList title="➕ Agrega tu lista de películas por ver" data={movieResults} type="movie" onAdd={handleAdd} onOpenModal={openModal} />
-        <MovieList title="➕ Agrega tu lista de series por ver" data={tvResults} type="tv" onAdd={handleAdd} onOpenModal={openModal} />
-        <MovieList title="🎯 Tu lista de películas" data={watchlistMovies} type="movie" onAdd={handleAdd} onOpenModal={openModal} />
-        <MovieList title="🎯 Tu lista de series" data={watchlistSeries} type="tv" onAdd={handleAdd} onOpenModal={openModal} />
+        {renderHorizontal('🔥 Películas populares', trendingMovies, 'movie')}
+        {renderHorizontal('📺 Series populares', trendingTV, 'tv')}
+        {renderHorizontal('➕ Agrega tu lista de películas por ver', movieResults, 'movie')}
+        {renderHorizontal('➕ Agrega tu lista de series por ver', tvResults, 'tv')}
+        {renderHorizontal('🎯 Tu lista de películas', watchlistMovies, 'movie')}
+        {renderHorizontal('🎯 Tu lista de series', watchlistSeries, 'tv')}
       </ScrollView>
 
       {selected && (
@@ -167,6 +183,39 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     height: 40,
     marginBottom: 20,
+  },
+  section: {
+    marginBottom: 30,
+  },
+  sectionTitle: {
+    color: '#4e342e',
+    fontSize: 18,
+    fontWeight: '600',
+    marginBottom: 10,
+  },
+  itemContainer: {
+    marginRight: 10,
+    width: 120,
+    alignItems: 'center',
+  },
+  poster: {
+    width: 120,
+    height: 180,
+    borderRadius: 10,
+    backgroundColor: '#e1c699',
+  },
+  itemTitle: {
+    color: '#4e342e',
+    fontSize: 12,
+    marginTop: 5,
+  },
+  addIcon: {
+    position: 'absolute',
+    top: 5,
+    right: 5,
+    backgroundColor: '#7b5e57',
+    borderRadius: 12,
+    padding: 2,
   },
   modalContainer: {
     flex: 1,
